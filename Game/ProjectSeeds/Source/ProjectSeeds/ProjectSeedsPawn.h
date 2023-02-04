@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseSeed.h"
+#include "BaseSeedAI.h"
 #include "GameFramework/Character.h"
 #include "ProjectSeedsPawn.generated.h"
 
 UCLASS(Blueprintable)
-class AProjectSeedsPawn : public APawn
+class AProjectSeedsPawn : public ABaseSeed
 {
 	GENERATED_BODY()
 
@@ -34,21 +36,22 @@ public:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float FireRate;
 
-	/* The speed our ship moves around the level */
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed;
-
 	/** Sound to play each time we fire */
 	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
 	class USoundBase* FireSound;
 
 	// Begin Actor Interface
 	virtual void Tick(float DeltaSeconds) override;
+	void RotateTowardsMouse();
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	void SetFiringPressed();
+	void SetFiringReleased();
+	bool IsFireInputPressed();
 	// End Actor Interface
 
 	/* Fire a shot in the specified direction */
-	void FireShot(FVector FireDirection);
+	UFUNCTION()
+	void FireShot();
 
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
@@ -58,15 +61,22 @@ public:
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
 	static const FName FireRightBinding;
+	static const FName FireBinding;
 
 private:
 	virtual void BeginPlay() override;
+
+	ESeedFaction Faction;
+	bool bIsFiringPressed = false;
 	
 	/* Flag to control firing  */
 	uint32 bCanFire : 1;
 
 	/** Handle for efficient management of ShotTimerExpired timer */
 	FTimerHandle TimerHandle_ShotTimerExpired;
+
+	UPROPERTY()
+	APlayerController* PlayerController;
 
 public:
 	/** Returns ShipMeshComponent subobject **/
