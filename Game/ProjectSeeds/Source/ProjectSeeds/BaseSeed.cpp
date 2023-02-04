@@ -5,26 +5,29 @@
 
 #include "AbilityComponent.h"
 #include "ProjectSeedsProjectile.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseSeed::ABaseSeed()
 {
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/TwinStick/Meshes/TwinStickUFO.TwinStickUFO"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(
+		TEXT("/Game/TwinStick/Meshes/TwinStickUFO.TwinStickUFO"));
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetupAttachment(RootComponent);
 
-	AbilityComponent =  CreateDefaultSubobject<UAbilityComponent>(TEXT("AbiilityComponent"));
+	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbiilityComponent"));
 	//RootComponent = CapsuleComponent;
-	
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Cache our sound effect
-	static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
+	static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(
+		TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
 	FireSound = FireAudio.Object;
 
 	// Weapon
@@ -32,13 +35,19 @@ ABaseSeed::ABaseSeed()
 	FireRate = 0.2f;
 	bCanFire = true;
 
+	// Health
 	MaxHealthPoints = 100.0f;
+
+	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthUIComponent"));
+	HealthBarComponent->SetupAttachment(RootComponent);
+
+	// Points
 	ResetPoints();
 }
 
 bool ABaseSeed::TargetIsEnemy(ABaseSeed* TargetSeed)
 {
-	if(SeedFaction != TargetSeed->SeedFaction)
+	if (SeedFaction != TargetSeed->SeedFaction)
 	{
 		return true;
 	}
@@ -54,6 +63,25 @@ void ABaseSeed::ResetPoints()
 void ABaseSeed::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HealthBarComponent)
+	{
+		if (HealthBarComponent->GetWidget() != nullptr)
+		{
+			HealthWidget = Cast<UHealthWidget>(HealthBarComponent->GetWidget());
+		}
+	}
+	if (HealthWidget)
+	{
+		HealthWidget->HealthBar->SetPercent(GetHealthPercentage());
+		if (SeedFaction == ESeedFaction::FactionEnemy)
+		{
+			HealthWidget->HealthBar->SetFillColorAndOpacity(HealthWidget->EnemyColour);
+		}
+		else
+		{
+			HealthWidget->HealthBar->SetFillColorAndOpacity(HealthWidget->FriendlyColour);
+		}
+	}
 }
 
 // Called every frame
@@ -65,7 +93,7 @@ void ABaseSeed::Tick(float DeltaTime)
 void ABaseSeed::StartShotTimer()
 {
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ABaseSeed::ShotTimerExpired,
-    			FireRate);
+	                                       FireRate);
 }
 
 void ABaseSeed::FireShot()
@@ -121,6 +149,10 @@ void ABaseSeed::Heal(float Value)
 void ABaseSeed::CheckHealth()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%f"), HealthPoints));
+	if (HealthWidget)
+	{
+		HealthWidget->HealthBar->SetPercent(GetHealthPercentage());
+	}
 	if (HealthPoints <= 0.0f)
 	{
 		HandleDeath();
@@ -139,7 +171,7 @@ void ABaseSeed::HandleDeath()
 	{
 		GetWorld()->SpawnActor<AActor>(DeathRewardActor, GetActorLocation(), GetActorRotation());
 	}
-	
+
 	OnDeath.Broadcast(this);
 	Destroy();
 }
@@ -148,7 +180,9 @@ void ABaseSeed::SetMoveSpeed(float Value)
 {
 	this->MoveSpeed = Value;
 }
-float ABaseSeed::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+
+float ABaseSeed::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                            AActor* DamageCauser)
 {
 	const float PreviousHealth = HealthPoints;
 	HealthPoints -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
