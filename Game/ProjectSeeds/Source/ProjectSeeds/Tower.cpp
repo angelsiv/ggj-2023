@@ -12,7 +12,7 @@ ATower::ATower()
 	bCanMove = false;
 	bCanFire = true;
 	SeedFaction = ESeedFaction::FactionEnemy;
-
+	
 	SpawnerComponent = CreateDefaultSubobject<USpawnerComponent>(TEXT("SpawnerComponent"));
 }
 

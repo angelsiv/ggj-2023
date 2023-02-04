@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HealthBarComponent.h"
+#include "HealthWidget.h"
 #include "ProjectSeedsProjectile.h"
 #include "GameFramework/Character.h"
 #include "BaseSeed.generated.h"
@@ -28,27 +30,32 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UAbilityComponent* AbilityComponent;
 
-
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();
 
 	UFUNCTION(BlueprintCallable)
 	bool TargetIsEnemy(ABaseSeed* TargetSeed);
-	
+
 	FOnDeath OnDeath;
-	
+
 	UPROPERTY(EditAnywhere)
 	bool bCanMove = true;
-	
+
 	UPROPERTY(EditAnywhere)
 	bool bIsAlive = true;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float HealthPoints;
-	
+
 	UPROPERTY(EditAnywhere)
 	float MaxHealthPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UHealthBarComponent* HealthBarComponent;
+
+	UPROPERTY(EditAnywhere)
+	UHealthWidget* HealthWidget;
 
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
@@ -110,10 +117,12 @@ public:
 
 	virtual void SetMoveSpeed(float Value);
 
-	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
 
 protected:
 	void StartShotTimer();
+	
 
 private:
 	/** Handle for efficient management of ShotTimerExpired timer */
