@@ -3,6 +3,7 @@
 
 #include "BaseSeed.h"
 
+#include "OrbitingProjectile.h"
 #include "ProjectSeedsProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
