@@ -60,8 +60,31 @@ void AProjectSeedsPawn::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
-	PlayerInputComponent->BindAction(FireBinding, IE_Pressed, this, &AProjectSeedsPawn::FireShot);
+	
+	PlayerInputComponent->BindAction(FireBinding, IE_Pressed, this, &AProjectSeedsPawn::SetFiringPressed);
+	PlayerInputComponent->BindAction(FireBinding, IE_Released, this, &AProjectSeedsPawn::SetFiringReleased);
 }
+
+void AProjectSeedsPawn::SetFiringPressed()
+{
+	bIsFiringPressed = true;	
+}
+
+void AProjectSeedsPawn::SetFiringReleased()
+{
+	bIsFiringPressed = false;
+}
+
+bool AProjectSeedsPawn::IsFireInputPressed()
+{
+	if(!bIsFiringPressed)
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 
 void AProjectSeedsPawn::Tick(float DeltaSeconds)
 {
@@ -90,9 +113,12 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 		}
 	}
 	
-	// Create fire direction vector
 	RotateTowardsMouse();
-	//FireShot();
+
+	if(IsFireInputPressed())
+	{
+		FireShot();	
+	}
 }
 
 void AProjectSeedsPawn::RotateTowardsMouse()

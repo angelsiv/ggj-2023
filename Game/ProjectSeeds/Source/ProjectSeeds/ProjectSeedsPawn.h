@@ -46,6 +46,9 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	void RotateTowardsMouse();
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	void SetFiringPressed();
+	void SetFiringReleased();
+	bool IsFireInputPressed();
 	// End Actor Interface
 
 	/* Fire a shot in the specified direction */
@@ -65,6 +68,8 @@ public:
 
 private:
 	virtual void BeginPlay() override;
+
+	bool bIsFiringPressed = false;
 	
 	/* Flag to control firing  */
 	uint32 bCanFire : 1;
