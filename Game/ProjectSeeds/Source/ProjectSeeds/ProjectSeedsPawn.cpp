@@ -139,3 +139,11 @@ void AProjectSeedsPawn::ShotTimerExpired()
 	bCanFire = true;
 }
 
+void AProjectSeedsPawn::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerControllerRef->SetShowMouseCursor(true);
+}
+

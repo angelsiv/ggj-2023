@@ -60,7 +60,8 @@ public:
 	static const FName FireRightBinding;
 
 private:
-
+	virtual void BeginPlay() override;
+	
 	/* Flag to control firing  */
 	uint32 bCanFire : 1;
 

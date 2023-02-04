@@ -1,2 +1,0 @@
-F:\ggj-2023\Game\ProjectSeeds\Intermediate\Build\Win64\UE4Editor\Development\ProjectSeeds\Definitions.ProjectSeeds.h
-F:\ggj-2023\Game\ProjectSeeds\Source\ProjectSeeds\ProjectSeeds.h
