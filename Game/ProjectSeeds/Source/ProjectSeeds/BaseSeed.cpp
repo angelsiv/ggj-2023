@@ -130,7 +130,8 @@ void ABaseSeed::HandleDeath()
 	{
 		GetWorld()->SpawnActor<AActor>(DeathRewardActor, GetActorLocation(), GetActorRotation());
 	}
-
+	
+	OnDeath.Broadcast(this);
 	Destroy();
 }
 

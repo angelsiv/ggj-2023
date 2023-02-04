@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "BaseSeed.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, ABaseSeed*, BaseSeed);
+
 UENUM()
 enum class ESeedFaction : uint8
 {
@@ -29,7 +31,9 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();
-
+	
+	FOnDeath OnDeath;
+	
 	UPROPERTY(EditAnywhere)
 	bool bCanMove = true;
 	

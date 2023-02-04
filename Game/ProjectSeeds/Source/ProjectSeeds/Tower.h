@@ -6,6 +6,7 @@
 #include "BaseSeedAI.h"
 #include "Tower.generated.h"
 
+class USpawnerComponent;
 /**
  * 
  */
@@ -17,23 +18,26 @@ class PROJECTSEEDS_API ATower : public ABaseSeedAI
 	ATower();
 
 	// Sphere collider used for range
-	UPROPERTY(Category = Collision, EditAnywhere)
+	UPROPERTY(Category = Collision, VisibleAnywhere)
 	class USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	USpawnerComponent* SpawnerComponent;
 
 public:
 	UPROPERTY(Category = Gameplay, EditAnywhere)
-	class ABaseSeed* Target;
+	ABaseSeed* Target;
 
 public:
 	UFUNCTION()
 	void ChangeFaction();
 
 	virtual void FireShot() override;
-	
+
 	UFUNCTION()
 	void OnComponentOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
-	                        int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+							int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	virtual void PostInitializeComponents() override;
 
 private:

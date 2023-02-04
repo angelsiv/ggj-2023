@@ -3,7 +3,7 @@
 
 #include "Tower.h"
 
-#include "Components/MeshComponent.h"
+#include "SpawnerComponent.h"
 #include "Components/SphereComponent.h"
 
 ATower::ATower()
@@ -15,6 +15,8 @@ ATower::ATower()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->InitSphereRadius(RangeRadius);
+
+	SpawnerComponent = CreateDefaultSubobject<USpawnerComponent>(TEXT("SpawnerComponent"));
 }
 
 void ATower::ChangeFaction()
