@@ -21,10 +21,8 @@ class AProjectSeedsPawn : public ABaseSeed
 
 public:
 	AProjectSeedsPawn();
-
-	void RotateTowardsMouse();
+	virtual bool ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const override;
 
 private:
-
 	ESeedFaction Faction;
 };

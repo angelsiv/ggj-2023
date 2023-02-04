@@ -27,7 +27,8 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UAbilityComponent* AbilityComponent;
-	
+
+
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();
@@ -52,6 +53,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bShouldBLine = false;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> DeathRewardActor;
 

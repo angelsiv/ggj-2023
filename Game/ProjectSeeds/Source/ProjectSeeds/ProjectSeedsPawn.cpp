@@ -4,6 +4,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+static TAutoConsoleVariable<bool> CVarGodMode(
+	TEXT("c.PlayerGodMode"),
+	false,
+	TEXT("Enable or disable player GodMode"),
+	ECVF_Cheat);
+
 AProjectSeedsPawn::AProjectSeedsPawn()
 {
 	// Create a camera boom...
@@ -21,4 +27,8 @@ AProjectSeedsPawn::AProjectSeedsPawn()
 	// Movement
 	MoveSpeed = 1000.0f;
 	SeedFaction = ESeedFaction::FactionPlayer;
+}
+bool AProjectSeedsPawn::ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const
+{
+	return !CVarGodMode.GetValueOnAnyThread();
 }
