@@ -23,12 +23,22 @@ ABaseSeed::ABaseSeed()
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
 	FireSound = FireAudio.Object;
-	
+
 	// Weapon
 	GunOffset = FVector(90.f, 0.f, 0.f);
 	FireRate = 0.2f;
 	bCanFire = true;
-}	
+
+	MaxHealthPoints = 100.0f;
+	MaxActionPoints = 1;
+	ResetPoints();
+}
+
+void ABaseSeed::ResetPoints()
+{
+	HealtPoints = MaxHealthPoints;
+	ActionPoints = MaxActionPoints;
+}
 
 // Called when the game starts or when spawned
 void ABaseSeed::BeginPlay()
@@ -58,7 +68,7 @@ void ABaseSeed::FireShot()
 
 		bCanFire = false;
 		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ABaseSeed::ShotTimerExpired,
-										  FireRate);
+			FireRate);
 
 		// try and play the sound if specified
 		if (FireSound != nullptr)
@@ -75,35 +85,75 @@ void ABaseSeed::ShotTimerExpired()
 	bCanFire = true;
 }
 
-// // Called to bind functionality to input
-// void ABaseSeed::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-// {
-// 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-// }
-
 void ABaseSeed::SetHealthToFull()
 {
-	this->Health = 1;
+	HealtPoints = MaxHealthPoints;
+	CheckHealth();
 }
 
 void ABaseSeed::SetHealthToZero()
 {
-	this->Health = 0;
+	HealtPoints = 0.0f;
+	CheckHealth();
 }
 
 void ABaseSeed::Heal(float Value)
 {
+	HealtPoints = FMath::Min(MaxHealthPoints, HealtPoints + Value);
+	CheckHealth();
 }
 
-void ABaseSeed::Damage(ABaseSeed Target, float Value)
+void ABaseSeed::CheckHealth()
 {
-	
+	if (HealtPoints <= 0.0f)
+	{
+		HandleDeath();
+	}
+}
+
+void ABaseSeed::UpgradeMaxHealthPoints(float Value)
+{
+	MaxHealthPoints += Value;
+	HealtPoints = MaxHealthPoints;
+}
+
+void ABaseSeed::UpgradeMaxActionPoints(int Value)
+{
+	MaxActionPoints += Value;
+	ActionPoints = MaxActionPoints;
+}
+
+bool ABaseSeed::CanSpendActionPoints(int Value)
+{
+	if (ActionPoints >= Value)
+	{
+		ActionPoints -= Value;
+		return true;
+	}
+
+	return false;
+}
+
+void ABaseSeed::HandleDeath()
+{
+	if (DeathRewardActor)
+	{
+		GetWorld()->SpawnActor<AActor>(DeathRewardActor, GetActorLocation(), GetActorRotation());
+	}
+
+	Destroy();
 }
 
 void ABaseSeed::SetMoveSpeed(float Value)
 {
 	this->MoveSpeed = Value;
 }
+float ABaseSeed::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const float PreviousHealth = HealtPoints;
+	HealtPoints -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
+	CheckHealth();
 
-
+	return PreviousHealth - HealtPoints;
+}
