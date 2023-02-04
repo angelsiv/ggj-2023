@@ -76,10 +76,9 @@ void ABaseSeed::FireShot()
 		const FVector SpawnLocation = GetActorLocation() + GetActorRotation().RotateVector(GunOffset);
 
 		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (World != nullptr && IsValid(ProjectileClass))
 		{
-			// spawn the projectile
-			AProjectSeedsProjectile* Projectile = World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
+			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation());
 			Projectile->OwningActor = this;
 		}
 

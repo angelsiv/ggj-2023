@@ -33,7 +33,8 @@ void ABaseSeedAI::FireShot()
 			// spawn the projectile, with randomness for fairness vs player
 			float RandomAngle = FMath::RandRange(-35, 35);
 			FRotator Randomness = FRotator(0, RandomAngle, 0);
-			World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation() + Randomness);
+			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation() + Randomness);
+			Projectile->OwningActor = this;
 
 		}
 

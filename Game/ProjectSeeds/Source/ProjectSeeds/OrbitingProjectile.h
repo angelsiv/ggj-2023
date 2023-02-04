@@ -16,8 +16,7 @@ class PROJECTSEEDS_API AOrbitingProjectile : public ABaseAbility
 
 public:
 	AOrbitingProjectile();
-
-	//virtual void FireAbility() override;
+	void ScaleDistance(float DeltaTime);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -32,5 +31,11 @@ public:
 	float OrbitSpeed;
 
 protected:
-	void OrbitAround();
+	float MaxOrbitalDistance = 1000.0f;
+	float MinOrbitalDistance = 200.0f;
+
+	
+	bool bIncreasing = false;
+
+	void OrbitAround(float DeltaTime);
 };

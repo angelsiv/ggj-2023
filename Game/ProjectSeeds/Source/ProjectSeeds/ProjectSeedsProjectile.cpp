@@ -39,11 +39,6 @@ void AProjectSeedsProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	//OwnerPawn = PlayerController->GetPawn();
-
-	//Owner			 = Cast<ABaseSeed>(GetOwner());
-	//PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
 }
 
 void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

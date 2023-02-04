@@ -20,10 +20,30 @@ AOrbitingProjectile::AOrbitingProjectile()
 	AbilityCost = 1;
 }
 
+void AOrbitingProjectile::ScaleDistance(float DeltaTime)
+{
+	if (bIncreasing)
+	{
+		DistanceFromPlayer = FMath::Min(DistanceFromPlayer + DeltaTime * (MaxOrbitalDistance - MinOrbitalDistance) / 5.0f, MaxOrbitalDistance);
+		if (DistanceFromPlayer >= MaxOrbitalDistance)
+		{
+			bIncreasing = false;
+		}
+	}
+	else
+	{
+		DistanceFromPlayer = FMath::Max(DistanceFromPlayer - DeltaTime * (MaxOrbitalDistance - MinOrbitalDistance) / 5.0f, MinOrbitalDistance);
+		if (DistanceFromPlayer <= MinOrbitalDistance)
+		{
+			bIncreasing = true;
+		}
+	}
+}
+
 void AOrbitingProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	OrbitAround();
+	OrbitAround(DeltaTime);
 }
 
 void AOrbitingProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -45,7 +65,7 @@ void AOrbitingProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 	}
 }
 
-void AOrbitingProjectile::OrbitAround()
+void AOrbitingProjectile::OrbitAround(float DeltaTime)
 {
 	// Get the player's location
 	
@@ -59,7 +79,9 @@ void AOrbitingProjectile::OrbitAround()
     
 	// Calculate the current angle based on OrbitSpeed and DeltaTime
 	float CurrentAngle = GetWorld()->GetTimeSeconds() * OrbitSpeed;
-    
+
+	ScaleDistance(DeltaTime);
+	
 	// Calculate the new position for the projectile based on the current angle
 	FVector NewLocation = PlayerPos + FVector(DistanceFromPlayer * FMath::Cos(CurrentAngle), DistanceFromPlayer * FMath::Sin(CurrentAngle), 0.0f);
     

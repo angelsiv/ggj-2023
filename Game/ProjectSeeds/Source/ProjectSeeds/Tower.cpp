@@ -5,6 +5,7 @@
 
 #include "SpawnerComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ATower::ATower()
 {
@@ -26,6 +27,8 @@ void ATower::ChangeFaction()
 		: SeedFaction = ESeedFaction::FactionEnemy;
 }
 
+
+
 bool ATower::bIsInRange(ABaseSeed* Entity)
 {
 	const auto Distance = FVector::Dist(GetActorLocation(), Entity->GetActorLocation());
@@ -36,4 +39,32 @@ bool ATower::bIsInRange(ABaseSeed* Entity)
 		return true;
 	}
 	else return false;
+}
+
+void ATower::FireShot()
+{
+	if (bCanFire == true)
+	{
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + GetActorRotation().RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile
+			AProjectSeedsProjectile* Projectile = World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
+			Projectile->OwningActor = this;
+		}
+
+		bCanFire = false;
+		StartShotTimer();
+
+		// try and play the sound if specified
+		if (FireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		}
+
+		bCanFire = false;
+	}
 }

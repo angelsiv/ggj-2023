@@ -77,6 +77,9 @@ protected:
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AProjectSeedsProjectile> ProjectileClass;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESeedFaction SeedFaction;

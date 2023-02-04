@@ -7,14 +7,6 @@
 #include "GameFramework/Pawn.h"
 #include "BaseSeedAI.generated.h"
 
-// UENUM()
-// enum class EFighterType : uint8
-// {
-// 	Melee,
-// 	Ranged,
-// 	Tower
-// };
-
 UCLASS()
 class PROJECTSEEDS_API ABaseSeedAI : public ABaseSeed
 {

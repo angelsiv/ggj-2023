@@ -17,10 +17,6 @@ class PROJECTSEEDS_API ATower : public ABaseSeedAI
 
 	ATower();
 
-	// // Sphere collider used for range
-	// UPROPERTY(Category = Collision, VisibleAnywhere)
-	// class USphereComponent* SphereComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	USpawnerComponent* SpawnerComponent;
 
@@ -34,6 +30,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool bIsInRange(ABaseSeed* Entity);
+
+protected:
+	virtual void FireShot() override;
 
 private:
 	UPROPERTY()
