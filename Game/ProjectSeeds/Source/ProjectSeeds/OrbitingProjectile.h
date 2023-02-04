@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ProjectSeedsProjectile.h"
+#include "BaseAbility.h"
 #include "OrbitingProjectile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTSEEDS_API AOrbitingProjectile : public AProjectSeedsProjectile
+class PROJECTSEEDS_API AOrbitingProjectile : public ABaseAbility
 {
 	GENERATED_BODY()
 

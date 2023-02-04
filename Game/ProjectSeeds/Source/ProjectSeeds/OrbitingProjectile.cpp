@@ -15,6 +15,9 @@ AOrbitingProjectile::AOrbitingProjectile()
 	DistanceFromPlayer = 150.0f;
 	OrbitSpeed = 10.0f;
 	InitialLifeSpan = 0.0f;
+
+	AbilityCooldown = 10.0f;
+	AbilityCost = 1;
 }
 
 void AOrbitingProjectile::Tick(float DeltaTime)

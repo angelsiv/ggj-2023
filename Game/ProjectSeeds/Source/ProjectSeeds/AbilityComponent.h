@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseAbility.h"
 #include "BaseSeed.h"
 #include "Components/ActorComponent.h"
 #include "AbilityComponent.generated.h"
@@ -16,6 +17,8 @@ public:
 	// Sets default values for this component's properties
 	UAbilityComponent();
 
+	void SetActiveAbility(ABaseAbility* Ability);
+	
 protected:
 	
 	void BindAbilities();
@@ -44,8 +47,11 @@ protected:
 
 	//Can change this to be ABaseAbility which holds cooldown & ability cost information
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AProjectSeedsProjectile> SelectedAbility;
+	TSubclassOf<ABaseAbility> SpawnedAbility;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ABaseAbility* SelectedAbility;
+	
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
