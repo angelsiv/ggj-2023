@@ -36,7 +36,7 @@ ABaseSeed::ABaseSeed()
 
 void ABaseSeed::ResetPoints()
 {
-	HealtPoints = MaxHealthPoints;
+	HealthPoints = MaxHealthPoints;
 	ActionPoints = MaxActionPoints;
 }
 
@@ -87,25 +87,26 @@ void ABaseSeed::ShotTimerExpired()
 
 void ABaseSeed::SetHealthToFull()
 {
-	HealtPoints = MaxHealthPoints;
+	HealthPoints = MaxHealthPoints;
 	CheckHealth();
 }
 
 void ABaseSeed::SetHealthToZero()
 {
-	HealtPoints = 0.0f;
+	HealthPoints = 0.0f;
 	CheckHealth();
 }
 
 void ABaseSeed::Heal(float Value)
 {
-	HealtPoints = FMath::Min(MaxHealthPoints, HealtPoints + Value);
+	HealthPoints = FMath::Min(MaxHealthPoints, HealthPoints + Value);
 	CheckHealth();
 }
 
 void ABaseSeed::CheckHealth()
 {
-	if (HealtPoints <= 0.0f)
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%f"), HealthPoints));
+	if (HealthPoints <= 0.0f)
 	{
 		HandleDeath();
 	}
@@ -114,7 +115,7 @@ void ABaseSeed::CheckHealth()
 void ABaseSeed::UpgradeMaxHealthPoints(float Value)
 {
 	MaxHealthPoints += Value;
-	HealtPoints = MaxHealthPoints;
+	HealthPoints = MaxHealthPoints;
 }
 
 void ABaseSeed::UpgradeMaxActionPoints(int Value)
@@ -150,10 +151,10 @@ void ABaseSeed::SetMoveSpeed(float Value)
 }
 float ABaseSeed::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float PreviousHealth = HealtPoints;
-	HealtPoints -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	const float PreviousHealth = HealthPoints;
+	HealthPoints -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	CheckHealth();
 
-	return PreviousHealth - HealtPoints;
+	return PreviousHealth - HealthPoints;
 }

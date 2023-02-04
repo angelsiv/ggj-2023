@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserve
 
 #include "ProjectSeedsProjectile.h"
+
+#include "BaseSeedAI.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
@@ -36,9 +38,22 @@ AProjectSeedsProjectile::AProjectSeedsProjectile()
 void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))// && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 20.0f, GetActorLocation());
+		ABaseSeedAI* Other = Cast<ABaseSeedAI>(OtherActor);
+		if(Other != nullptr)
+		{
+			//probably the instigator here would be null since the bullet won't have a controller
+			Other->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("dmg")));
+		}
+
+		if(OtherComp->IsSimulatingPhysics())
+		{
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 20.0f, GetActorLocation());
+		}
+
+		
 	}
 
 	Destroy();

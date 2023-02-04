@@ -32,7 +32,7 @@ public:
 	bool bIsAlive = true;
 
 	UPROPERTY(EditAnywhere)
-	float HealtPoints;
+	float HealthPoints;
 	UPROPERTY(EditAnywhere)
 	float MaxHealthPoints;
 
@@ -86,7 +86,7 @@ public:
 	virtual void SetHealthToZero();
 	virtual void Heal(float Value);
 	virtual void CheckHealth();
-	float GetHealthPercentage() const { return HealtPoints / MaxHealthPoints; }
+	float GetHealthPercentage() const { return HealthPoints / MaxHealthPoints; }
 
 	virtual void UpgradeMaxHealthPoints(float Value);
 	virtual void UpgradeMaxActionPoints(int Value);
