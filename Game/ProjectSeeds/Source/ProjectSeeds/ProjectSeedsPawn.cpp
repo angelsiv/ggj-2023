@@ -4,11 +4,13 @@
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
+#include "Components/DecalComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundBase.h"
 
 const FName AProjectSeedsPawn::MoveForwardBinding("MoveForward");
@@ -18,7 +20,7 @@ const FName AProjectSeedsPawn::FireRightBinding("FireRight");
 const FName AProjectSeedsPawn::FireBinding("Fire");
 
 AProjectSeedsPawn::AProjectSeedsPawn()
-{	
+{
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -32,6 +34,19 @@ AProjectSeedsPawn::AProjectSeedsPawn()
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;	// Camera does not rotate relative to arm
 
+	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
+	CursorToWorld->SetupAttachment(RootComponent);
+	
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/Material/M_Cursor_Decal.M_Cursor_Decal'"));
+
+	if (DecalMaterialAsset.Succeeded())
+	{
+		CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
+	}
+	
+	CursorToWorld->DecalSize = DecalSize;
+	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+
 	// Movement
 	MoveSpeed = 1000.0f;
 	SeedFaction = ESeedFaction::FactionPlayer;
@@ -44,14 +59,14 @@ void AProjectSeedsPawn::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
-	
+
 	PlayerInputComponent->BindAction(FireBinding, IE_Pressed, this, &AProjectSeedsPawn::SetFiringPressed);
 	PlayerInputComponent->BindAction(FireBinding, IE_Released, this, &AProjectSeedsPawn::SetFiringReleased);
 }
 
 void AProjectSeedsPawn::SetFiringPressed()
 {
-	bIsFiringPressed = true;	
+	bIsFiringPressed = true;
 }
 
 void AProjectSeedsPawn::SetFiringReleased()
@@ -61,11 +76,11 @@ void AProjectSeedsPawn::SetFiringReleased()
 
 bool AProjectSeedsPawn::IsFireInputPressed()
 {
-	if(!bIsFiringPressed)
+	if (!bIsFiringPressed)
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -87,7 +102,7 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 		const FRotator NewRotation = Movement.Rotation();
 		FHitResult Hit(1.f);
 		RootComponent->MoveComponent(Movement, NewRotation, true, &Hit);
-		
+
 		if (Hit.IsValidBlockingHit())
 		{
 			const FVector Normal2D = Hit.Normal.GetSafeNormal2D();
@@ -95,30 +110,38 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 			RootComponent->MoveComponent(Deflection, NewRotation, true);
 		}
 	}
-	
+
 	RotateTowardsMouse();
 
-	if(IsFireInputPressed())
+	if (IsFireInputPressed())
 	{
-		FireShot();	
+		FireShot();
 	}
 }
 
 void AProjectSeedsPawn::RotateTowardsMouse()
 {
-	FVector MouseLocation;
-	FVector MouseDirection;
-	PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+	// FVector MouseLocation;
+	// FVector MouseDirection;
+	// PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+	//
+	// FRotator Rotation = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
+	// SetActorRotation(FRotator(0, Rotation.Yaw, 0));
 
-	FRotator Rotation = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
-	SetActorRotation(FRotator(0, Rotation.Yaw, 0));
+	FHitResult TraceHitResult;
+	PlayerController->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
+	FVector CursorFV = TraceHitResult.ImpactNormal;
+	FRotator CursorR = CursorFV.Rotation();
+	FRotator NewLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TraceHitResult.Location);
+	SetActorRotation(FRotator(0, NewLookAtRotation.Yaw, 0));
+
+	CursorToWorld->SetWorldLocation(TraceHitResult.Location);
+	CursorToWorld->SetWorldRotation(CursorR);
 }
 
 void AProjectSeedsPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerController = GetWorld()->GetFirstPlayerController();
+	PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetShowMouseCursor(true);
-	
 }
-
