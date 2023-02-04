@@ -7,9 +7,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "SeedPlayerController.generated.h"
 
-/**
- * 
- */
+DECLARE_LOG_CATEGORY_EXTERN(LogSeedPlayerController, All, All);
+
 UCLASS()
 class PROJECTSEEDS_API ASeedPlayerController : public APlayerController
 {
@@ -17,7 +16,7 @@ class PROJECTSEEDS_API ASeedPlayerController : public APlayerController
 
 public:
 	ASeedPlayerController();
-	
+
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void SetupInputComponent() override;
@@ -28,11 +27,17 @@ public:
 	void SetFiringReleased();
 	bool IsFireInputPressed() const;
 
+	void IncreaseCurrency(int Value);
+	bool CanSpendCurrency(int Value);
+
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
 
 	void OnZoom(float AxisValue);
 	void OnZoomResetPressed();
+
+	UFUNCTION()
+	void OnBeginActorPawnOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -47,8 +52,9 @@ public:
 	float ZoomMax = 3500.0f;
 
 	bool bIsFiringPressed = false;
-	
-	
+
+	UPROPERTY(VisibleAnywhere)
+	int CurrencyAmmount = 0;
 
 private:
 	// Static names for axis bindings
@@ -62,8 +68,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* _cameraBoom;
-	
+
 	UPROPERTY()
 	AActor* _spawnedCursor;
-	
 };

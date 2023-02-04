@@ -4,10 +4,13 @@
 #include "SeedPlayerController.h"
 
 #include "ProjectSeedsPawn.h"
+#include "SeedCollectable.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+
+DEFINE_LOG_CATEGORY(LogSeedPlayerController);
 
 const FName ASeedPlayerController::MoveForwardBinding("MoveForward");
 const FName ASeedPlayerController::MoveRightBinding("MoveRight");
@@ -116,6 +119,22 @@ bool ASeedPlayerController::IsFireInputPressed() const
 
 	return true;
 }
+void ASeedPlayerController::IncreaseCurrency(int Value)
+{
+	CurrencyAmmount += Value;
+	UE_LOG(LogSeedPlayerController, Display, TEXT("IncreaseCurrency by %i Total: %i"), Value, CurrencyAmmount);
+}
+
+bool ASeedPlayerController::CanSpendCurrency(int Value)
+{
+	if (CurrencyAmmount >= Value)
+	{
+		CurrencyAmmount -= Value;
+		return true;
+	}
+	
+	return false;
+}
 
 void ASeedPlayerController::OnPossess(APawn* aPawn)
 {
@@ -124,6 +143,8 @@ void ASeedPlayerController::OnPossess(APawn* aPawn)
 	check(aPawn)
 
 	_cameraBoom = Cast<USpringArmComponent>(aPawn->GetComponentByClass(USpringArmComponent::StaticClass()));
+
+	aPawn->OnActorBeginOverlap.AddDynamic(this, &ASeedPlayerController::OnBeginActorPawnOverlap);
 	
 	if (IsValid(_cameraBoom))
 	{
@@ -149,5 +170,12 @@ void ASeedPlayerController::OnZoomResetPressed()
 	if (IsValid(_cameraBoom))
 	{
 		_cameraBoom->TargetArmLength = ZoomDefault;
+	}
+}
+void ASeedPlayerController::OnBeginActorPawnOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (auto* seedCollectable = Cast<ASeedCollectable>(OtherActor))
+	{
+		seedCollectable->Collect(this, OverlappedActor);
 	}
 }
