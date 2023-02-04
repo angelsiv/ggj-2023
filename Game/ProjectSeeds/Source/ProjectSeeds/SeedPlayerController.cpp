@@ -137,6 +137,11 @@ bool ASeedPlayerController::CanSpendCurrency(int Value)
 	return false;
 }
 
+AProjectSeedsPawn* ASeedPlayerController::GetSeedPawn() const
+{
+	return Cast<AProjectSeedsPawn>(GetPawn());
+}
+
 void ASeedPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);

@@ -30,6 +30,9 @@ public:
 	void IncreaseCurrency(int Value);
 	bool CanSpendCurrency(int Value);
 
+	UFUNCTION(BlueprintCallable)
+	AProjectSeedsPawn* GetSeedPawn() const;
+
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
 

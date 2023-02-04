@@ -18,7 +18,7 @@ ASeedCollectable::ASeedCollectable()
 	RootComponent = SceneRootComponent;
 	
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	StaticMeshComponent->SetCollisionProfileName("SeedCollectable");
 	StaticMeshComponent->SetupAttachment(RootComponent);
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
@@ -27,13 +27,24 @@ ASeedCollectable::ASeedCollectable()
 
 void ASeedCollectable::Collect(ASeedPlayerController* playerController, AActor* collector)
 {
+	CollectAction(playerController,collector);
+
+	// Play Pickup sound
+	if (PickupSound)
+	{
+		UGameplayStatics::PlaySound2D(this, PickupSound);
+	}
+	
+	Destroy();
+}
+
+void ASeedCollectable::CollectAction(ASeedPlayerController* playerController, AActor* collector)
+{
 	if (IsValid(playerController))
 	{
 		UE_LOG(LogSeedCollectable, Display, TEXT("%s Pickup %s"), *GetNameSafe(collector), *GetName());
 		playerController->IncreaseCurrency(CurrentValue);
 	}
-
-	Destroy();
 }
 
 // Called every frame
@@ -48,13 +59,4 @@ void ASeedCollectable::Tick(float DeltaTime)
 		));
 }
 
-void ASeedCollectable::Destroyed()
-{
-	if (PickupSound)
-	{
-		UGameplayStatics::PlaySound2D(this, PickupSound);
-	}
-	
-	Super::Destroyed();
-}
 

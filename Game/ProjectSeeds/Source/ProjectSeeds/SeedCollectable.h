@@ -18,15 +18,15 @@ class PROJECTSEEDS_API ASeedCollectable : public AActor
 public:
 	// Sets default values for this actor's properties
 	ASeedCollectable();
-	/* The mesh component */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* SceneRootComponent;
 	
 	/* The mesh component */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StaticMeshComponent;
 	
-	UPROPERTY(Category = Collision, VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* SphereComponent;
 
 	UPROPERTY(EditAnywhere)
@@ -42,8 +42,9 @@ public:
 
 	void Collect(ASeedPlayerController* playerController, AActor* collector);
 
+	virtual void CollectAction(ASeedPlayerController* playerController, AActor* collector);
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Destroyed() override;
 };
