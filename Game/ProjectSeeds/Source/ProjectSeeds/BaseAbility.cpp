@@ -11,6 +11,7 @@ ABaseAbility::ABaseAbility()
 
 	AbilityCooldown = 5.0f;
 	AbilityCost = 1;
+	AbilityDuration = 0.0f;
 
 }
 

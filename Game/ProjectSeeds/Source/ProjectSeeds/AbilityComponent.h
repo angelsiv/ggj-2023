@@ -24,6 +24,7 @@ protected:
 	void BindAbilities();
 	bool bAbilityOnCooldown();
 	void CooldownExpired();
+	void ActiveAbilityExpired();
 	void ActivateAbility();
 	void ResetPoints();
 
@@ -31,7 +32,10 @@ protected:
 	virtual bool CanSpendActionPoints(int Value);
 	virtual void UpgradeMaxActionPoints(int Value);
 
-	FTimerHandle AbilityTimerHandle;
+	FTimerHandle ActiveDurationAbilityHandle;
+	FTimerHandle AbilityCooldownHandle;
+
+	bool bActiveAbility;
 	
 	UPROPERTY(EditAnywhere)
 	int MaxActionPoints;
@@ -49,8 +53,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ABaseAbility> SpawnedAbility;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ABaseAbility* SelectedAbility;
+	UPROPERTY()
+	AProjectSeedsProjectile* ActivatedAbility;
 	
 	// Called when the game starts
 	virtual void BeginPlay() override;

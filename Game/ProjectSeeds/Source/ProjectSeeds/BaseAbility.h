@@ -18,13 +18,16 @@ public:
 	// Sets default values for this actor's properties
 	ABaseAbility();
 
-protected:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int AbilityCost;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AbilityCooldown;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AbilityDuration;
 	
+	
+protected:
+
 };

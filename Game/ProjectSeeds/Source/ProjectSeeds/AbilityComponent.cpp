@@ -26,7 +26,7 @@ void UAbilityComponent::BindAbilities()
 
 bool UAbilityComponent::bAbilityOnCooldown()
 {
-	if (!GetWorld()->GetTimerManager().IsTimerActive(AbilityTimerHandle))
+	if (!GetWorld()->GetTimerManager().IsTimerActive(AbilityCooldownHandle))
 	{
 		return false;
 	}
@@ -37,19 +37,37 @@ bool UAbilityComponent::bAbilityOnCooldown()
 
 void UAbilityComponent::ActivateAbility()
 {
-	if(!bAbilityOnCooldown() && CanSpendActionPoints(1))
+	if(!bActiveAbility && !bAbilityOnCooldown() && CanSpendActionPoints(1))
 	{
-		//SelectedAbility->FireAbility();
 		AProjectSeedsProjectile* Projectile = GetWorld()->SpawnActor<AProjectSeedsProjectile>(SpawnedAbility, Owner->GetActorLocation(), Owner->GetActorRotation());
 		Projectile->OwningActor = GetOwner();
 
-		GetWorld()->GetTimerManager().SetTimer(AbilityTimerHandle, this, &UAbilityComponent::CooldownExpired, 15.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(AbilityCooldownHandle, this, &UAbilityComponent::CooldownExpired, SpawnedAbility.GetDefaultObject()->AbilityCooldown, false);
+
+		if(SpawnedAbility.GetDefaultObject()->AbilityDuration > 0.0f)
+		{
+			ActivatedAbility = Projectile;
+			bActiveAbility = true;
+			GetWorld()->GetTimerManager().SetTimer(ActiveDurationAbilityHandle, this, &UAbilityComponent::ActiveAbilityExpired, SpawnedAbility.GetDefaultObject()->AbilityDuration, false);
+		}
 	}
 }
 
 void UAbilityComponent::CooldownExpired()
 {
 	// do nothing for now
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("ability cooldown expired")));
+}
+
+void UAbilityComponent::ActiveAbilityExpired()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("active ability expired")));
+	bActiveAbility = false;
+
+	if(ActivatedAbility != nullptr)
+	{
+		ActivatedAbility->Destroy();
+	}
 }
 
 void UAbilityComponent::ResetPoints()
