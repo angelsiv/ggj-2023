@@ -103,7 +103,6 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 
 	if(IsFireInputPressed())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("input pressed")));
 		FireShot();	
 	}
 }
