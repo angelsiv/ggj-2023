@@ -14,6 +14,7 @@ class PROJECTSEEDS_API USpawnerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
 	// Sets default values for this component's properties
 	USpawnerComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -24,7 +25,7 @@ public:
 	float SpawningSpeed = 1.0f;
 	UPROPERTY(EditAnywhere)
 	int SpawnQuantity = 5;
-
+		
 	
 protected:
 	// Called when the game starts

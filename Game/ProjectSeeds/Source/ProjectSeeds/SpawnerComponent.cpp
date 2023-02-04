@@ -2,9 +2,8 @@
 
 
 #include "SpawnerComponent.h"
-
 #include "BaseSeed.h"
-
+#include "NavigationSystem.h"
 
 // Sets default values for this component's properties
 USpawnerComponent::USpawnerComponent()
@@ -12,8 +11,6 @@ USpawnerComponent::USpawnerComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -46,7 +43,14 @@ void USpawnerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		{
 			if (const auto& ToSpawn = Spawns[randomIndex])
 			{
-				ABaseSeed* NewBaseSeed = Cast<ABaseSeed>(GetWorld()->SpawnActor<ABaseSeed>(ToSpawn, GetOwner()->GetActorTransform(), spawnParameters));
+				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+				FVector Origin = GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 400.0f);
+
+				FNavLocation  RandomPoint;
+
+				NavSys->GetRandomPointInNavigableRadius(Origin, 200.0f, RandomPoint);
+				ABaseSeed* NewBaseSeed = Cast<ABaseSeed>(GetWorld()->SpawnActor<ABaseSeed>(ToSpawn, RandomPoint.Location, GetOwner()->GetActorRotation(), spawnParameters));
+				
 				NewBaseSeed->OnDeath.AddDynamic(this, &USpawnerComponent::OnSpawnDeath);
 			}
 		}
