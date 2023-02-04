@@ -6,8 +6,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Kismet/GameplayStatics.h"
 
 AProjectSeedsProjectile::AProjectSeedsProjectile() 
 {
@@ -28,11 +28,19 @@ AProjectSeedsProjectile::AProjectSeedsProjectile()
 	ProjectileMovement->InitialSpeed = 3000.f;
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
-	ProjectileMovement->bShouldBounce = false;
+	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->ProjectileGravityScale = 0.f; // No gravity
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+}
+
+void AProjectSeedsProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	OwnerPawn = PlayerController->GetPawn();
 }
 
 void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -51,8 +59,6 @@ void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 		{
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 20.0f, GetActorLocation());
 		}
-
-		
 	}
 
 	Destroy();

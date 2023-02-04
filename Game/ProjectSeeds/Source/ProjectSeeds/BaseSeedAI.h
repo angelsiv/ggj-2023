@@ -7,6 +7,14 @@
 #include "GameFramework/Pawn.h"
 #include "BaseSeedAI.generated.h"
 
+// UENUM()
+// enum class EFighterType : uint8
+// {
+// 	Melee,
+// 	Ranged,
+// 	Tower
+// };
+
 UCLASS()
 class PROJECTSEEDS_API ABaseSeedAI : public ABaseSeed
 {
@@ -21,6 +29,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void FireShot() override;
 
+	//EFighterType Type;
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

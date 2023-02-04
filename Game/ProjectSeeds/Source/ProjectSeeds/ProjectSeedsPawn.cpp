@@ -119,6 +119,5 @@ void AProjectSeedsPawn::BeginPlay()
 	Super::BeginPlay();
 	PlayerController = GetWorld()->GetFirstPlayerController();
 	PlayerController->SetShowMouseCursor(true);
-	
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ProjectSeedsProjectile.h"
 #include "GameFramework/Character.h"
 #include "BaseSeed.generated.h"
 
@@ -62,6 +63,9 @@ protected:
 	/** Sound to play each time we fire */
 	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
 	class USoundBase* FireSound;
+
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// AProjectSeedsProjectile* FiredProjectile;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
