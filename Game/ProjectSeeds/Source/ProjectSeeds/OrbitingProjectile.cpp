@@ -29,7 +29,7 @@ void AOrbitingProjectile::Tick(float DeltaTime)
 void AOrbitingProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherActor != OwningActor)
 	{
 		ABaseSeed* Other = Cast<ABaseSeed>(OtherActor);
 		if (Other != nullptr)

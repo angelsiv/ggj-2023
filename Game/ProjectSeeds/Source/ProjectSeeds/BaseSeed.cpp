@@ -79,7 +79,8 @@ void ABaseSeed::FireShot()
 		if (World != nullptr)
 		{
 			// spawn the projectile
-			World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
+			AProjectSeedsProjectile* Projectile = World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
+			Projectile->OwningActor = this;
 		}
 
 		bCanFire = false;
