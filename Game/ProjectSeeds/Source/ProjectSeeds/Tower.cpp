@@ -12,9 +12,9 @@ ATower::ATower()
 	bCanFire = true;
 	SeedFaction = ESeedFaction::FactionEnemy;
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
-	SphereComponent->SetupAttachment(RootComponent);
-	SphereComponent->InitSphereRadius(RangeRadius);
+	// SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
+	// SphereComponent->SetupAttachment(RootComponent);
+	// SphereComponent->InitSphereRadius(RangeRadius);
 
 	SpawnerComponent = CreateDefaultSubobject<USpawnerComponent>(TEXT("SpawnerComponent"));
 }
