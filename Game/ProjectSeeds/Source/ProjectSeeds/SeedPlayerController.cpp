@@ -4,7 +4,9 @@
 #include "SeedPlayerController.h"
 
 #include "ProjectSeedsPawn.h"
+#include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 const FName ASeedPlayerController::MoveForwardBinding("MoveForward");
@@ -12,6 +14,8 @@ const FName ASeedPlayerController::MoveRightBinding("MoveRight");
 const FName ASeedPlayerController::FireForwardBinding("FireForward");
 const FName ASeedPlayerController::FireRightBinding("FireRight");
 const FName ASeedPlayerController::FireBinding("Fire");
+const FName ASeedPlayerController::Zoom("Zoom");
+const FName ASeedPlayerController::ZoomReset("ZoomReset");
 
 ASeedPlayerController::ASeedPlayerController()
 {
@@ -26,7 +30,7 @@ void ASeedPlayerController::Tick(float DeltaSeconds)
 	{
 		return;
 	}
-	
+
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
@@ -70,11 +74,14 @@ void ASeedPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction(FireBinding, IE_Pressed, this, &ASeedPlayerController::SetFiringPressed);
 	InputComponent->BindAction(FireBinding, IE_Released, this, &ASeedPlayerController::SetFiringReleased);
+
+	InputComponent->BindAxis(Zoom, this, &ASeedPlayerController::OnZoom);
+	InputComponent->BindAction(ZoomReset, IE_Pressed, this, &ASeedPlayerController::OnZoomResetPressed);
 }
 
 void ASeedPlayerController::RotateTowardsMouse()
 {
-		FHitResult TraceHitResult;
+	FHitResult TraceHitResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult))
 	{
 		FVector CursorFV = TraceHitResult.ImpactNormal;
@@ -84,20 +91,12 @@ void ASeedPlayerController::RotateTowardsMouse()
 
 		if (IsValid(_spawnedCursor))
 		{
-			// _spawnedCursor->SetHidden(false);
 			_spawnedCursor->SetActorLocation(TraceHitResult.Location);
 			_spawnedCursor->SetActorRotation(CursorR);
 		}
 	}
-	else
-	{
-		if (IsValid(_spawnedCursor))
-		{
-			// _spawnedCursor->SetHidden(true);
-		}
-	}
 }
-	
+
 void ASeedPlayerController::SetFiringPressed()
 {
 	bIsFiringPressed = true;
@@ -121,9 +120,34 @@ bool ASeedPlayerController::IsFireInputPressed() const
 void ASeedPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
+
+	check(aPawn)
+
+	_cameraBoom = Cast<USpringArmComponent>(aPawn->GetComponentByClass(USpringArmComponent::StaticClass()));
+	
+	if (IsValid(_cameraBoom))
+	{
+		_cameraBoom->TargetArmLength = ZoomDefault;
+	}
 	
 	if (CursorActor)
 	{
 		_spawnedCursor = GetWorld()->SpawnActor<AActor>(CursorActor);
+	}
+}
+
+void ASeedPlayerController::OnZoom(float AxisValue)
+{
+	if (IsValid(_cameraBoom))
+	{
+		_cameraBoom->TargetArmLength = FMath::Clamp(_cameraBoom->TargetArmLength - AxisValue * ZoomSpeed, ZoomMin, ZoomMax);
+	}
+}
+
+void ASeedPlayerController::OnZoomResetPressed()
+{
+	if (IsValid(_cameraBoom))
+	{
+		_cameraBoom->TargetArmLength = ZoomDefault;
 	}
 }
