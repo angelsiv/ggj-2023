@@ -20,7 +20,6 @@ AOrbitingProjectile::AOrbitingProjectile()
 void AOrbitingProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	OrbitAround();
 }
 
@@ -47,14 +46,13 @@ void AOrbitingProjectile::OrbitAround()
 {
 	// Get the player's location
 	
-	if(!IsValid(OwnerPawn))
+	if(!IsValid(OwningActor))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Invalid")));
 		return;
 	}
 
 	FVector PlayerPos;
-	PlayerPos = OwnerPawn->GetActorLocation();
+	PlayerPos = OwningActor->GetActorLocation();
     
 	// Calculate the current angle based on OrbitSpeed and DeltaTime
 	float CurrentAngle = GetWorld()->GetTimeSeconds() * OrbitSpeed;

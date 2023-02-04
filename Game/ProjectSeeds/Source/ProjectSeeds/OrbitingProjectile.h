@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseAbility.h"
 #include "ProjectSeedsProjectile.h"
 #include "OrbitingProjectile.generated.h"
 
@@ -17,7 +18,8 @@ class PROJECTSEEDS_API AOrbitingProjectile : public AProjectSeedsProjectile
 public:
 	AOrbitingProjectile();
 
-	
+	//virtual void FireAbility() override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;

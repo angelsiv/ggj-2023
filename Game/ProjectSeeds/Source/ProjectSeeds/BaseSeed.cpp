@@ -3,7 +3,7 @@
 
 #include "BaseSeed.h"
 
-#include "OrbitingProjectile.h"
+#include "AbilityComponent.h"
 #include "ProjectSeedsProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,6 +16,8 @@ ABaseSeed::ABaseSeed()
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetupAttachment(RootComponent);
+
+	AbilityComponent =  CreateDefaultSubobject<UAbilityComponent>(TEXT("AbiilityComponent"));
 	//RootComponent = CapsuleComponent;
 	
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -31,14 +33,12 @@ ABaseSeed::ABaseSeed()
 	bCanFire = true;
 
 	MaxHealthPoints = 100.0f;
-	MaxActionPoints = 1;
 	ResetPoints();
 }
 
 void ABaseSeed::ResetPoints()
 {
 	HealthPoints = MaxHealthPoints;
-	ActionPoints = MaxActionPoints;
 }
 
 // Called when the game starts or when spawned
@@ -122,23 +122,6 @@ void ABaseSeed::UpgradeMaxHealthPoints(float Value)
 {
 	MaxHealthPoints += Value;
 	HealthPoints = MaxHealthPoints;
-}
-
-void ABaseSeed::UpgradeMaxActionPoints(int Value)
-{
-	MaxActionPoints += Value;
-	ActionPoints = MaxActionPoints;
-}
-
-bool ABaseSeed::CanSpendActionPoints(int Value)
-{
-	if (ActionPoints >= Value)
-	{
-		ActionPoints -= Value;
-		return true;
-	}
-
-	return false;
 }
 
 void ABaseSeed::HandleDeath()

@@ -23,24 +23,24 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* ShipMeshComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UAbilityComponent* AbilityComponent;
+	
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();
 
 	UPROPERTY(EditAnywhere)
 	bool bCanMove = true;
+	
 	UPROPERTY(EditAnywhere)
 	bool bIsAlive = true;
 
 	UPROPERTY(EditAnywhere)
 	float HealthPoints;
+	
 	UPROPERTY(EditAnywhere)
 	float MaxHealthPoints;
-
-	UPROPERTY(EditAnywhere)
-	int ActionPoints;
-	UPROPERTY(EditAnywhere)
-	int MaxActionPoints;
 
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
@@ -63,9 +63,6 @@ protected:
 	/** Sound to play each time we fire */
 	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
 	class USoundBase* FireSound;
-
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// AProjectSeedsProjectile* FiredProjectile;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -93,10 +90,6 @@ public:
 	float GetHealthPercentage() const { return HealthPoints / MaxHealthPoints; }
 
 	virtual void UpgradeMaxHealthPoints(float Value);
-	virtual void UpgradeMaxActionPoints(int Value);
-
-	// Action Points
-	virtual bool CanSpendActionPoints(int Value);
 
 	virtual void HandleDeath();
 

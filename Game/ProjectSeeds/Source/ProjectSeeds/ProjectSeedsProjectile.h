@@ -25,6 +25,8 @@ public:
 	/** Returns ProjectileMovement subobject **/
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 	
+	UPROPERTY()
+	AActor* OwningActor;
 
 protected:
 	
@@ -43,10 +45,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float ProjectileDamage = 25.0f;
 
-	UPROPERTY()
-	APlayerController* PlayerController;
+	// UPROPERTY()
+	// APlayerController* PlayerController;
 
-	UPROPERTY()
-	APawn* OwnerPawn;
+
+	
 };
 
