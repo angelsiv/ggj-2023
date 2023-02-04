@@ -10,9 +10,7 @@ UCLASS(Blueprintable)
 class AProjectSeedsPawn : public ABaseSeed
 {
 	GENERATED_BODY()
-
-
-
+	
 	/** The camera */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* CameraComponent;

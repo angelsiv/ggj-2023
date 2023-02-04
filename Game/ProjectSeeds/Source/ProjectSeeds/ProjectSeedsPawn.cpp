@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ProjectSeedsPawn.h"
-#include "ProjectSeedsProjectile.h"
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -10,7 +9,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
-#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 
 const FName AProjectSeedsPawn::MoveForwardBinding("MoveForward");
@@ -70,7 +68,6 @@ bool AProjectSeedsPawn::IsFireInputPressed()
 	
 	return true;
 }
-
 
 void AProjectSeedsPawn::Tick(float DeltaSeconds)
 {

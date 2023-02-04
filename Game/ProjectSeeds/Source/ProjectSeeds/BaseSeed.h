@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "BaseSeed.generated.h"
 
 UENUM()
@@ -14,7 +14,7 @@ enum class ESeedFaction : uint8
 };
 
 UCLASS()
-class PROJECTSEEDS_API ABaseSeed : public APawn
+class PROJECTSEEDS_API ABaseSeed : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -61,9 +61,6 @@ public:
 	UFUNCTION()
 	virtual void FireShot();
 	
-	// Called to bind functionality to input
-	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	// Health related stuffs
 	virtual void SetHealthToFull();
 	virtual void SetHealthToZero();
@@ -79,6 +76,4 @@ private:
 	FTimerHandle TimerHandle_ShotTimerExpired;
 
 public:
-	/** Returns ShipMeshComponent subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 };
