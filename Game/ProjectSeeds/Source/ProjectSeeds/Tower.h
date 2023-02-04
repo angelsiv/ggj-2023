@@ -37,5 +37,5 @@ public:
 
 private:
 	UPROPERTY()
-	float RangeRadius = 10.0f;
+	float RangeRadius = 2000.0f;
 };

@@ -29,6 +29,8 @@ void ATower::ChangeFaction()
 bool ATower::bIsInRange(ABaseSeed* Entity)
 {
 	const auto Distance = FVector::Dist(GetActorLocation(), Entity->GetActorLocation());
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%f"), Distance));
+	
 	if(Distance <= RangeRadius)
 	{
 		return true;
