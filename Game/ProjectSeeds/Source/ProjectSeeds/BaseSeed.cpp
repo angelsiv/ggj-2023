@@ -52,6 +52,12 @@ void ABaseSeed::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABaseSeed::StartShotTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ABaseSeed::ShotTimerExpired,
+    			FireRate);
+}
+
 void ABaseSeed::FireShot()
 {
 	if (bCanFire == true)
@@ -67,8 +73,7 @@ void ABaseSeed::FireShot()
 		}
 
 		bCanFire = false;
-		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ABaseSeed::ShotTimerExpired,
-			FireRate);
+		StartShotTimer();
 
 		// try and play the sound if specified
 		if (FireSound != nullptr)

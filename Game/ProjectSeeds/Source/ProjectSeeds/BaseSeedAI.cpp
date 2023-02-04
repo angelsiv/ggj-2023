@@ -3,6 +3,9 @@
 
 #include "BaseSeedAI.h"
 
+#include "ProjectSeedsProjectile.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ABaseSeedAI::ABaseSeedAI()
 {
@@ -15,6 +18,36 @@ ABaseSeedAI::ABaseSeedAI()
 void ABaseSeedAI::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABaseSeedAI::FireShot()
+{
+	if (bCanFire == true)
+	{
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + GetActorRotation().RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile, with randomness for fairness vs player
+			float RandomAngle = FMath::RandRange(-35, 35);
+			FRotator Randomness = FRotator(0, RandomAngle, 0);
+			World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation() + Randomness);
+
+		}
+
+		bCanFire = false;
+		StartShotTimer();
+
+		// try and play the sound if specified
+		if (FireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		}
+
+		bCanFire = false;
+	}
 }
 
 // Called every frame

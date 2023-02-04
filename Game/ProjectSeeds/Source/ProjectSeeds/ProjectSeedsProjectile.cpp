@@ -40,12 +40,11 @@ void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))// && OtherComp->IsSimulatingPhysics())
 	{
-		ABaseSeedAI* Other = Cast<ABaseSeedAI>(OtherActor);
+		ABaseSeed* Other = Cast<ABaseSeed>(OtherActor);
 		if(Other != nullptr)
 		{
 			//probably the instigator here would be null since the bullet won't have a controller
 			Other->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("dmg")));
 		}
 
 		if(OtherComp->IsSimulatingPhysics())

@@ -76,7 +76,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/* Fire a shot in the specified direction */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void FireShot();
 
 	void ResetPoints();
@@ -99,6 +99,9 @@ public:
 	virtual void SetMoveSpeed(float Value);
 
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+protected:
+	void StartShotTimer();
 
 private:
 	/** Handle for efficient management of ShotTimerExpired timer */
