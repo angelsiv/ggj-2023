@@ -13,10 +13,6 @@ ATower::ATower()
 	bCanFire = true;
 	SeedFaction = ESeedFaction::FactionEnemy;
 
-	// SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
-	// SphereComponent->SetupAttachment(RootComponent);
-	// SphereComponent->InitSphereRadius(RangeRadius);
-
 	SpawnerComponent = CreateDefaultSubobject<USpawnerComponent>(TEXT("SpawnerComponent"));
 }
 
@@ -51,9 +47,8 @@ void ATower::FireShot()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			// spawn the projectile
-			AProjectSeedsProjectile* Projectile = World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
-			Projectile->OwningActor = this;
+			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation());
+            Projectile->OwningActor = this;
 		}
 
 		bCanFire = false;

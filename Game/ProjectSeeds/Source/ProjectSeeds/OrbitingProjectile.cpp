@@ -12,7 +12,6 @@ AOrbitingProjectile::AOrbitingProjectile()
 	PrimaryActorTick.bCanEverTick = true;
     
 	// Set default values for DistanceFromPlayer and OrbitSpeed
-	DistanceFromPlayer = 150.0f;
 	OrbitSpeed = 10.0f;
 	InitialLifeSpan = 0.0f;
 

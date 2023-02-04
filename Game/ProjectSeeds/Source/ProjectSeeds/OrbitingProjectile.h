@@ -22,8 +22,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	
-	// Distance between the player and the projectile
-	UPROPERTY(EditAnywhere)
 	float DistanceFromPlayer;
     
 	// Speed at which the projectile orbits the player
@@ -31,7 +29,7 @@ public:
 	float OrbitSpeed;
 
 protected:
-	float MaxOrbitalDistance = 1000.0f;
+	float MaxOrbitalDistance = 750.0f;
 	float MinOrbitalDistance = 200.0f;
 
 	

@@ -28,6 +28,9 @@ public:
 	UPROPERTY()
 	AActor* OwningActor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float ProjectileDamage = 25.0f;
+
 protected:
 	
 	/** Function to handle the projectile hitting something */
@@ -42,9 +45,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float ProjectileDamage = 25.0f;
-
 	// UPROPERTY()
 	// APlayerController* PlayerController;
 
