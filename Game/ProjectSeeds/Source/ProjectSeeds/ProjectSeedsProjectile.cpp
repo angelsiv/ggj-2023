@@ -59,5 +59,12 @@ void AProjectSeedsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 		}
 	}
 
-	Destroy();
+	if(Cast<AProjectSeedsProjectile>(OtherActor) && bDestroyOnHit)
+	{
+		Destroy();
+	}
+	else if (!Cast<AProjectSeedsProjectile>(OtherActor))
+	{
+		Destroy();
+	}
 }
