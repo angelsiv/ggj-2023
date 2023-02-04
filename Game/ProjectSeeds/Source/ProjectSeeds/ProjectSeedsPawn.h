@@ -18,40 +18,13 @@ class AProjectSeedsPawn : public ABaseSeed
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UDecalComponent* CursorToWorld;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	FVector DecalSize = FVector(16.0f, 32.0f, 32.0f);
 
 public:
 	AProjectSeedsPawn();
 
-	// Begin Actor Interface
-	virtual void Tick(float DeltaSeconds) override;
-
 	void RotateTowardsMouse();
-	void SetFiringPressed();
-	void SetFiringReleased();
-	bool IsFireInputPressed();
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	// End Actor Interface
-
-	// Static names for axis bindings
-	static const FName MoveForwardBinding;
-	static const FName MoveRightBinding;
-	static const FName FireForwardBinding;
-	static const FName FireRightBinding;
-	static const FName FireBinding;
 
 private:
-	virtual void BeginPlay() override;
 
 	ESeedFaction Faction;
-	bool bIsFiringPressed = false;
-
-	UPROPERTY()
-	APlayerController* PlayerController;
 };
