@@ -15,16 +15,33 @@ UAbilityComponent::UAbilityComponent()
 void UAbilityComponent::BindAbilities()
 {
 	PlayerController->InputComponent->BindAction(ActivateBinding, IE_Pressed, this, &UAbilityComponent::ActivateAbility);
+}
 
+bool UAbilityComponent::bAbilityOnCooldown()
+{
+	if (!GetWorld()->GetTimerManager().IsTimerActive(AbilityTimerHandle))
+	{
+		return false;
+	}
+
+	return true;
+	
+}
+
+void UAbilityComponent::CooldownExpired()
+{
+	
 }
 
 void UAbilityComponent::ActivateAbility()
 {
-	if(CanSpendActionPoints(1))
+	if(!bAbilityOnCooldown() && CanSpendActionPoints(1))
 	{
 		//SelectedAbility->FireAbility();
 		AProjectSeedsProjectile* Projectile = GetWorld()->SpawnActor<AProjectSeedsProjectile>(SelectedAbility, Owner->GetActorLocation(), Owner->GetActorRotation());
 		Projectile->OwningActor = GetOwner();
+
+		GetWorld()->GetTimerManager().SetTimer(AbilityTimerHandle, this, &UAbilityComponent::CooldownExpired, 15.0f, false);
 	}
 }
 

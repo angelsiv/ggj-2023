@@ -19,6 +19,8 @@ public:
 protected:
 	
 	void BindAbilities();
+	bool bAbilityOnCooldown();
+	void CooldownExpired();
 	void ActivateAbility();
 	void ResetPoints();
 
@@ -26,6 +28,8 @@ protected:
 	virtual bool CanSpendActionPoints(int Value);
 	virtual void UpgradeMaxActionPoints(int Value);
 
+	FTimerHandle AbilityTimerHandle;
+	
 	UPROPERTY(EditAnywhere)
 	int MaxActionPoints;
 	
@@ -38,13 +42,10 @@ protected:
 	UPROPERTY()
 	ABaseSeed* Owner;
 
+	//Can change this to be ABaseAbility which holds cooldown & ability cost information
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectSeedsProjectile> SelectedAbility;
 
-	//Expose list of abilites in editor, add bIsUnlocked in BaseAbility and check against
-	// UPROPERTY()
-	// TArray<ABaseAbility*> OwnedAbilities;
-	
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
