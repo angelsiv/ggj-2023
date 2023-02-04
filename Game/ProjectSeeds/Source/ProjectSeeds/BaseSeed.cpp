@@ -27,6 +27,16 @@ ABaseSeed::ABaseSeed()
 	GunOffset = FVector(90.f, 0.f, 0.f);
 	FireRate = 0.2f;
 	bCanFire = true;
+
+	MaxHealthPoints = 100.0f;
+	MaxActionPoints = 1;
+	ResetPoints();
+}
+
+void ABaseSeed::ResetPoints()
+{
+	HealtPoints = MaxHealthPoints;
+	ActionPoints = MaxActionPoints;
 }
 
 // Called when the game starts or when spawned
@@ -76,32 +86,60 @@ void ABaseSeed::ShotTimerExpired()
 
 void ABaseSeed::SetHealthToFull()
 {
-	Health = MaxHealth;
+	HealtPoints = MaxHealthPoints;
 	CheckHealth();
 }
 
 void ABaseSeed::SetHealthToZero()
 {
-	Health = 0.0f;
+	HealtPoints = 0.0f;
 	CheckHealth();
 }
 
 void ABaseSeed::Heal(float Value)
 {
-	Health = FMath::Min(MaxHealth, Health + Value);
+	HealtPoints = FMath::Min(MaxHealthPoints, HealtPoints + Value);
 	CheckHealth();
 }
 
 void ABaseSeed::CheckHealth()
 {
-	if (Health <= 0.0f)
+	if (HealtPoints <= 0.0f)
 	{
 		HandleDeath();
 	}
 }
 
+void ABaseSeed::UpgradeMaxHealthPoints(float Value)
+{
+	MaxHealthPoints += Value;
+	HealtPoints = MaxHealthPoints;
+}
+
+void ABaseSeed::UpgradeMaxActionPoints(int Value)
+{
+	MaxActionPoints += Value;
+	ActionPoints = MaxActionPoints;
+}
+
+bool ABaseSeed::CanSpendActionPoints(int Value)
+{
+	if (ActionPoints >= Value)
+	{
+		ActionPoints -= Value;
+		return true;
+	}
+
+	return false;
+}
+
 void ABaseSeed::HandleDeath()
 {
+	if (DeathRewardActor)
+	{
+		GetWorld()->SpawnActor<AActor>(DeathRewardActor, GetActorLocation(), GetActorRotation());
+	}
+
 	Destroy();
 }
 
@@ -111,10 +149,10 @@ void ABaseSeed::SetMoveSpeed(float Value)
 }
 float ABaseSeed::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float PreviousHealth = Health;
-	Health -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	const float PreviousHealth = HealtPoints;
+	HealtPoints -= Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	CheckHealth();
 
-	return PreviousHealth - Health;
+	return PreviousHealth - HealtPoints;
 }

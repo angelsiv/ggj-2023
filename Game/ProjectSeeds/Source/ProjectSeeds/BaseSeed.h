@@ -32,9 +32,9 @@ public:
 	bool bIsAlive = true;
 
 	UPROPERTY(EditAnywhere)
-	float Health;
+	float HealtPoints;
 	UPROPERTY(EditAnywhere)
-	float MaxHealth;
+	float MaxHealthPoints;
 
 	UPROPERTY(EditAnywhere)
 	int ActionPoints;
@@ -43,6 +43,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> DeathRewardActor;
 
 protected:
 	/* Flag to control firing  */
@@ -76,13 +79,21 @@ public:
 	UFUNCTION()
 	virtual void FireShot();
 
+	void ResetPoints();
+
 	// Health related stuffs
 	virtual void SetHealthToFull();
 	virtual void SetHealthToZero();
 	virtual void Heal(float Value);
 	virtual void CheckHealth();
-	float GetHealthPercentage() const { return Health / MaxHealth; }
-	
+	float GetHealthPercentage() const { return HealtPoints / MaxHealthPoints; }
+
+	virtual void UpgradeMaxHealthPoints(float Value);
+	virtual void UpgradeMaxActionPoints(int Value);
+
+	// Action Points
+	virtual bool CanSpendActionPoints(int Value);
+
 	virtual void HandleDeath();
 
 	virtual void SetMoveSpeed(float Value);
