@@ -26,22 +26,12 @@ void ATower::ChangeFaction()
 		: SeedFaction = ESeedFaction::FactionEnemy;
 }
 
-void ATower::OnComponentOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
-                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-
+bool ATower::bIsInRange(ABaseSeed* Entity)
 {
-	if(auto* Entity = Cast<ABaseSeedAI>(Other))
+	const auto Distance = FVector::Dist(GetActorLocation(), Entity->GetActorLocation());
+	if(Distance <= RangeRadius)
 	{
-		if (Entity->SeedFaction != SeedFaction) // Verify target is of different faction
-		{
-			Target = Entity;
-			//FireShot();
-		}
-	};
-}
-
-void ATower::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnComponentOverlap);
+		return true;
+	}
+	else return false;
 }
