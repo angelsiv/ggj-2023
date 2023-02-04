@@ -10,7 +10,7 @@ UCLASS(Blueprintable)
 class AProjectSeedsPawn : public ABaseSeed
 {
 	GENERATED_BODY()
-	
+
 	/** The camera */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* CameraComponent;
@@ -18,13 +18,19 @@ class AProjectSeedsPawn : public ABaseSeed
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UDecalComponent* CursorToWorld;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	FVector DecalSize = FVector(16.0f, 32.0f, 32.0f);
 
 public:
 	AProjectSeedsPawn();
 
 	// Begin Actor Interface
 	virtual void Tick(float DeltaSeconds) override;
-	
+
 	void RotateTowardsMouse();
 	void SetFiringPressed();
 	void SetFiringReleased();
@@ -48,6 +54,4 @@ private:
 
 	UPROPERTY()
 	APlayerController* PlayerController;
-	
 };
-
