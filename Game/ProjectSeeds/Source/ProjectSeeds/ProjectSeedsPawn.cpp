@@ -17,6 +17,7 @@ const FName AProjectSeedsPawn::MoveForwardBinding("MoveForward");
 const FName AProjectSeedsPawn::MoveRightBinding("MoveRight");
 const FName AProjectSeedsPawn::FireForwardBinding("FireForward");
 const FName AProjectSeedsPawn::FireRightBinding("FireRight");
+const FName AProjectSeedsPawn::FireBinding("Fire");
 
 AProjectSeedsPawn::AProjectSeedsPawn()
 {	
@@ -59,8 +60,7 @@ void AProjectSeedsPawn::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
-	PlayerInputComponent->BindAxis(FireForwardBinding);
-	PlayerInputComponent->BindAxis(FireRightBinding);
+	PlayerInputComponent->BindAction(FireBinding, IE_Pressed, this, &AProjectSeedsPawn::FireShot);
 }
 
 void AProjectSeedsPawn::Tick(float DeltaSeconds)
@@ -91,46 +91,45 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 	}
 	
 	// Create fire direction vector
-	const float FireForwardValue = GetInputAxisValue(FireForwardBinding);
-	const float FireRightValue = GetInputAxisValue(FireRightBinding);
-	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f);
-
-	// Try and fire a shot
-
-	//move shoot to left mouse btn
-	//FireShot(FireDirection);
+	RotateTowardsMouse();
+	//FireShot();
 }
 
-void AProjectSeedsPawn::FireShot(FVector FireDirection)
+void AProjectSeedsPawn::RotateTowardsMouse()
 {
-	// If it's ok to fire again
+	FVector MouseLocation;
+	FVector MouseDirection;
+	PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+
+	FRotator Rotation = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
+	SetActorRotation(FRotator(0, Rotation.Yaw, 0));
+}
+
+void AProjectSeedsPawn::FireShot()
+{
 	if (bCanFire == true)
 	{
-		// If we are pressing fire stick in a direction
-		if (FireDirection.SizeSquared() > 0.0f)
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + GetActorRotation().RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
 		{
-			const FRotator FireRotation = FireDirection.Rotation();
-			// Spawn projectile at an offset from this pawn
-			const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
-
-			UWorld* const World = GetWorld();
-			if (World != nullptr)
-			{
-				// spawn the projectile
-				World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, FireRotation);
-			}
-
-			bCanFire = false;
-			World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &AProjectSeedsPawn::ShotTimerExpired, FireRate);
-
-			// try and play the sound if specified
-			if (FireSound != nullptr)
-			{
-				UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-			}
-
-			bCanFire = false;
+			// spawn the projectile
+			World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
 		}
+
+		bCanFire = false;
+		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &AProjectSeedsPawn::ShotTimerExpired,
+		                                  FireRate);
+
+		// try and play the sound if specified
+		if (FireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		}
+
+		bCanFire = false;
 	}
 }
 
@@ -142,8 +141,8 @@ void AProjectSeedsPawn::ShotTimerExpired()
 void AProjectSeedsPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerController = GetWorld()->GetFirstPlayerController();
+	PlayerController->SetShowMouseCursor(true);
 	
-	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerControllerRef->SetShowMouseCursor(true);
 }
 
