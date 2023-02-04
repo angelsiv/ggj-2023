@@ -102,7 +102,7 @@ void ABaseSeed::CheckHealth()
 
 void ABaseSeed::HandleDeath()
 {
-	Destroy(this);
+	Destroy();
 }
 
 void ABaseSeed::SetMoveSpeed(float Value)
