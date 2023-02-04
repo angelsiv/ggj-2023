@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseSeed.h"
+#include "BaseSeedAI.h"
 #include "GameFramework/Character.h"
 #include "ProjectSeedsPawn.generated.h"
 
 UCLASS(Blueprintable)
-class AProjectSeedsPawn : public APawn
+class AProjectSeedsPawn : public ABaseSeed
 {
 	GENERATED_BODY()
 
@@ -34,10 +36,6 @@ public:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float FireRate;
 
-	/* The speed our ship moves around the level */
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed;
-
 	/** Sound to play each time we fire */
 	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
 	class USoundBase* FireSound;
@@ -52,7 +50,6 @@ public:
 	// End Actor Interface
 
 	/* Fire a shot in the specified direction */
-	//void FireShot(FVector FireDirection);
 	UFUNCTION()
 	void FireShot();
 
@@ -69,6 +66,7 @@ public:
 private:
 	virtual void BeginPlay() override;
 
+	ESeedFaction Faction;
 	bool bIsFiringPressed = false;
 	
 	/* Flag to control firing  */

@@ -6,6 +6,13 @@
 #include "GameFramework/Pawn.h"
 #include "BaseSeed.generated.h"
 
+UENUM()
+enum class ESeedFaction : uint8
+{
+	FactionPlayer,
+	FactionEnemy
+};
+
 UCLASS()
 class PROJECTSEEDS_API ABaseSeed : public APawn
 {
@@ -16,7 +23,7 @@ public:
 	ABaseSeed();
 
 	UPROPERTY(EditAnywhere) bool bCanMove = true;
-	UPROPERTY(EditAnywhere) bool bIsAlive= true;
+	UPROPERTY(EditAnywhere) bool bIsAlive = true;
 	UPROPERTY(EditAnywhere) float Health;
 	UPROPERTY(EditAnywhere) float MoveSpeed;
 
@@ -38,4 +45,6 @@ public:
 	virtual void Damage(ABaseSeed Target, float Value);
 	
 	virtual void SetMoveSpeed(float Value);
+
+	ESeedFaction SeedFaction;
 };
