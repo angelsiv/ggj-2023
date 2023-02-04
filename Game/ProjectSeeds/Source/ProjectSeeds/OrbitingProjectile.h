@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseAbility.h"
 #include "ProjectSeedsProjectile.h"
 #include "OrbitingProjectile.generated.h"
 

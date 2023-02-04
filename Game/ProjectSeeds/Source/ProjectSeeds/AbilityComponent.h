@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseAbility.h"
 #include "BaseSeed.h"
 #include "Components/ActorComponent.h"
 #include "AbilityComponent.generated.h"
