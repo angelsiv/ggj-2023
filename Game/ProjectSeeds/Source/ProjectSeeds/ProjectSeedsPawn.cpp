@@ -21,17 +21,6 @@ const FName AProjectSeedsPawn::FireBinding("Fire");
 
 AProjectSeedsPawn::AProjectSeedsPawn()
 {	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/TwinStick/Meshes/TwinStickUFO.TwinStickUFO"));
-	// Create the mesh component
-	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
-	RootComponent = ShipMeshComponent;
-	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
-	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
-	
-	// Cache our sound effect
-	static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
-	FireSound = FireAudio.Object;
-
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -47,11 +36,6 @@ AProjectSeedsPawn::AProjectSeedsPawn()
 
 	// Movement
 	MoveSpeed = 1000.0f;
-	// Weapon
-	GunOffset = FVector(90.f, 0.f, 0.f);
-	FireRate = 0.1f;
-	bCanFire = true;
-
 	SeedFaction = ESeedFaction::FactionPlayer;
 }
 
@@ -119,6 +103,7 @@ void AProjectSeedsPawn::Tick(float DeltaSeconds)
 
 	if(IsFireInputPressed())
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("input pressed")));
 		FireShot();	
 	}
 }
@@ -131,39 +116,6 @@ void AProjectSeedsPawn::RotateTowardsMouse()
 
 	FRotator Rotation = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 	SetActorRotation(FRotator(0, Rotation.Yaw, 0));
-}
-
-void AProjectSeedsPawn::FireShot()
-{
-	if (bCanFire == true)
-	{
-		// Spawn projectile at an offset from this pawn
-		const FVector SpawnLocation = GetActorLocation() + GetActorRotation().RotateVector(GunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			// spawn the projectile
-			World->SpawnActor<AProjectSeedsProjectile>(SpawnLocation, GetActorRotation());
-		}
-
-		bCanFire = false;
-		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &AProjectSeedsPawn::ShotTimerExpired,
-		                                  FireRate);
-
-		// try and play the sound if specified
-		if (FireSound != nullptr)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-		}
-
-		bCanFire = false;
-	}
-}
-
-void AProjectSeedsPawn::ShotTimerExpired()
-{
-	bCanFire = true;
 }
 
 void AProjectSeedsPawn::BeginPlay()
