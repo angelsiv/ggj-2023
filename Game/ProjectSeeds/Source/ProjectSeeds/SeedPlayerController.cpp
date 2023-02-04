@@ -119,6 +119,7 @@ bool ASeedPlayerController::IsFireInputPressed() const
 
 	return true;
 }
+
 void ASeedPlayerController::IncreaseCurrency(int Value)
 {
 	CurrencyAmmount += Value;
@@ -172,6 +173,7 @@ void ASeedPlayerController::OnZoomResetPressed()
 		_cameraBoom->TargetArmLength = ZoomDefault;
 	}
 }
+
 void ASeedPlayerController::OnBeginActorPawnOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (auto* seedCollectable = Cast<ASeedCollectable>(OtherActor))

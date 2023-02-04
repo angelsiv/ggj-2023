@@ -50,7 +50,7 @@ void USpawnerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 				NavSys->GetRandomPointInNavigableRadius(Origin, 200.0f, RandomPoint);
 				ABaseSeed* NewBaseSeed = Cast<ABaseSeed>(GetWorld()->SpawnActor<ABaseSeed>(ToSpawn, RandomPoint.Location, GetOwner()->GetActorRotation(), spawnParameters));
-				
+				NewBaseSeed->bShouldBLine = true;
 				NewBaseSeed->OnDeath.AddDynamic(this, &USpawnerComponent::OnSpawnDeath);
 			}
 		}
