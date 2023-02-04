@@ -31,6 +31,9 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();
+
+	UFUNCTION(BlueprintCallable)
+	bool TargetIsEnemy(ABaseSeed* TargetSeed);
 	
 	FOnDeath OnDeath;
 	
@@ -75,6 +78,7 @@ protected:
 	void ShotTimerExpired();
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESeedFaction SeedFaction;
 
 	// Called every frame

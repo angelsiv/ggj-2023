@@ -43,7 +43,7 @@ AProjectSeedsPawn::AProjectSeedsPawn()
 	{
 		CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
 	}
-	
+
 	CursorToWorld->DecalSize = DecalSize;
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 

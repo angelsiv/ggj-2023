@@ -36,6 +36,15 @@ ABaseSeed::ABaseSeed()
 	ResetPoints();
 }
 
+bool ABaseSeed::TargetIsEnemy(ABaseSeed* TargetSeed)
+{
+	if(SeedFaction != TargetSeed->SeedFaction)
+	{
+		return true;
+	}
+	return false;
+}
+
 void ABaseSeed::ResetPoints()
 {
 	HealthPoints = MaxHealthPoints;

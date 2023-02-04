@@ -32,8 +32,6 @@ public:
 	UFUNCTION()
 	void ChangeFaction();
 
-	virtual void FireShot() override;
-
 	UFUNCTION()
 	void OnComponentOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
 							int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
