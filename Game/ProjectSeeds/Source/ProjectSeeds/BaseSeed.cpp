@@ -60,6 +60,7 @@ bool ABaseSeed::TargetIsEnemy(ABaseSeed* TargetSeed)
 void ABaseSeed::ResetPoints()
 {
 	HealthPoints = MaxHealthPoints;
+	CheckHealth();
 }
 
 // Called when the game starts or when spawned
@@ -204,6 +205,7 @@ void ABaseSeed::CheckHealth()
 	{
 		HealthWidget->HealthBar->SetPercent(GetHealthPercentage());
 	}
+	
 	if (HealthPoints <= 0.0f)
 	{
 		HandleDeath();

@@ -1,9 +1,13 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ProjectSeedsPawn.h"
+
+#include "EngineUtils.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameFramework/SpringArmComponent.h"
 
+class APlayerStart;
 static TAutoConsoleVariable<bool> CVarGodMode(
 	TEXT("c.PlayerGodMode"),
 	false,
@@ -31,4 +35,14 @@ AProjectSeedsPawn::AProjectSeedsPawn()
 bool AProjectSeedsPawn::ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const
 {
 	return !CVarGodMode.GetValueOnAnyThread();
+}
+void AProjectSeedsPawn::HandleDeath()
+{
+	ResetPoints();
+
+	for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
+	{
+		APlayerStart* playerStart = *It;
+		TeleportTo(playerStart->GetActorLocation(), playerStart->GetActorRotation());
+	}
 }

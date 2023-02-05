@@ -186,3 +186,12 @@ void ASeedPlayerController::OnBeginActorPawnOverlap(AActor* OverlappedActor, AAc
 		seedCollectable->Collect(this, OverlappedActor);
 	}
 }
+ASeedPlayerController* ASeedPlayerController::GetInstance(const UObject* contextObject)
+{
+	if (auto* world = GEngine->GetWorldFromContextObject(contextObject,EGetWorldErrorMode::LogAndReturnNull))
+	{
+		return Cast<ASeedPlayerController>(world->GetFirstPlayerController());
+	}
+	
+	return nullptr;
+}
