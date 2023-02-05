@@ -16,7 +16,7 @@ public:
 	UWeaponUpgradeComponent();
 
 	int GetNumBullets();
-	void PurchaseWeaponUpgrade();
+	void PurchaseWeaponUpgrade(int Value);
 
 public:	
 	// Called every frame

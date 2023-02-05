@@ -29,6 +29,7 @@ public:
 
 	void IncreaseCurrency(int Value);
 	bool CanSpendCurrency(int Value);
+	bool HasEnoughCurrency(int Value) const { return CurrencyAmmount >= Value; }
 
 	UFUNCTION(BlueprintCallable)
 	AProjectSeedsPawn* GetSeedPawn() const;

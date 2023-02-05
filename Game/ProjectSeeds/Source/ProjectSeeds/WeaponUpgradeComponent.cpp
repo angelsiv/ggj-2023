@@ -17,9 +17,9 @@ int UWeaponUpgradeComponent::GetNumBullets()
 	return NumExtraBullets;
 }
 
-void UWeaponUpgradeComponent::PurchaseWeaponUpgrade()
+void UWeaponUpgradeComponent::PurchaseWeaponUpgrade(int Value)
 {
-	NumExtraBullets++;
+	NumExtraBullets += Value;
 }
 
 // Called every frame

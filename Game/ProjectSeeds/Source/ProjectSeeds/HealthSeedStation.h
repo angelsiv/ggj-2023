@@ -13,6 +13,7 @@ UCLASS()
 class PROJECTSEEDS_API AHealthSeedStation : public ASeedStation
 {
 	GENERATED_BODY()
+	AHealthSeedStation();
 public:
 	virtual void StationAction() override;
 };

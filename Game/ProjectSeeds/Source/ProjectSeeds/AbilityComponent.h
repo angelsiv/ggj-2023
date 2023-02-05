@@ -19,30 +19,29 @@ public:
 
 	void SetActiveAbility(ABaseAbility* Ability);
 	
-protected:
-	
-	void BindAbilities();
-	bool bAbilityOnCooldown();
-	void CooldownExpired();
-	void ActiveAbilityExpired();
-	void ActivateAbility();
-	void ResetPoints();
-
 	// Action Points
 	virtual bool CanSpendActionPoints(int Value);
 	virtual void UpgradeMaxActionPoints(int Value);
-
-	FTimerHandle ActiveDurationAbilityHandle;
-	FTimerHandle AbilityCooldownHandle;
-
-	bool bActiveAbility;
+	void ResetPoints();
 	
 	UPROPERTY(EditAnywhere)
 	int MaxActionPoints;
 	
 	UPROPERTY(EditAnywhere)
 	int ActionPoints;
+	
+protected:
+	void BindAbilities();
+	bool bAbilityOnCooldown();
+	void CooldownExpired();
+	void ActiveAbilityExpired();
+	void ActivateAbility();
 
+	FTimerHandle ActiveDurationAbilityHandle;
+	FTimerHandle AbilityCooldownHandle;
+
+	bool bActiveAbility;
+	
 	UPROPERTY()
 	APlayerController* PlayerController;
 	
@@ -65,6 +64,4 @@ public:
 
 private:
 	static const FName ActivateBinding;
-
-	
 };

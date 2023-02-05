@@ -13,7 +13,8 @@ UCLASS()
 class PROJECTSEEDS_API AActionSeedStation : public ASeedStation
 {
 	GENERATED_BODY()
-
+	AActionSeedStation();
+	
 public:
 	virtual void StationAction() override;
 };

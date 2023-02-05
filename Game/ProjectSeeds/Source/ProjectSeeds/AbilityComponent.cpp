@@ -11,7 +11,7 @@ UAbilityComponent::UAbilityComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	ActionPoints = 1;
-
+	ResetPoints();
 }
 
 void UAbilityComponent::SetActiveAbility(ABaseAbility* Ability)
@@ -37,32 +37,32 @@ bool UAbilityComponent::bAbilityOnCooldown()
 
 void UAbilityComponent::ActivateAbility()
 {
-	if(!bActiveAbility && !bAbilityOnCooldown() && CanSpendActionPoints(1))
+	if (!bActiveAbility && !bAbilityOnCooldown() && CanSpendActionPoints(1))
 	{
-		AProjectSeedsProjectile* Projectile = GetWorld()->SpawnActor<AProjectSeedsProjectile>(SpawnedAbility, Owner->GetActorLocation(), Owner->GetActorRotation());
+		ABaseAbility* Projectile = GetWorld()->SpawnActor<ABaseAbility>(SpawnedAbility, Owner->GetActorLocation(), Owner->GetActorRotation());
 		Projectile->OwningActor = GetOwner();
 
-		GetWorld()->GetTimerManager().SetTimer(AbilityCooldownHandle, this, &UAbilityComponent::CooldownExpired, SpawnedAbility.GetDefaultObject()->AbilityCooldown, false);
+		GetWorld()->GetTimerManager().SetTimer(AbilityCooldownHandle, this, &UAbilityComponent::CooldownExpired, Projectile->AbilityCooldown, false);
 
-		if(SpawnedAbility.GetDefaultObject()->AbilityDuration > 0.0f)
+		if (Projectile->AbilityDuration > 0.0f)
 		{
 			ActivatedAbility = Projectile;
 			bActiveAbility = true;
-			GetWorld()->GetTimerManager().SetTimer(ActiveDurationAbilityHandle, this, &UAbilityComponent::ActiveAbilityExpired, SpawnedAbility.GetDefaultObject()->AbilityDuration, false);
+			GetWorld()->GetTimerManager().SetTimer(ActiveDurationAbilityHandle, this, &UAbilityComponent::ActiveAbilityExpired, Projectile->AbilityDuration, false);
 		}
 	}
 }
 
 void UAbilityComponent::CooldownExpired()
 {
-	ActionPoints += 1;
+	ActionPoints = FMath::Min(ActionPoints + 1, MaxActionPoints);
 }
 
 void UAbilityComponent::ActiveAbilityExpired()
 {
 	bActiveAbility = false;
 
-	if(ActivatedAbility != nullptr)
+	if (ActivatedAbility != nullptr)
 	{
 		ActivatedAbility->Destroy();
 	}
@@ -92,11 +92,11 @@ bool UAbilityComponent::CanSpendActionPoints(int Value)
 void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	Owner			 = Cast<ABaseSeed>(GetOwner());
+
+	Owner = Cast<ABaseSeed>(GetOwner());
 	PlayerController = Cast<APlayerController>(Owner->GetController());
 
-	if(IsValid(PlayerController))
+	if (IsValid(PlayerController))
 	{
 		BindAbilities();
 	}
@@ -110,4 +110,3 @@ void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	// ...
 }
-

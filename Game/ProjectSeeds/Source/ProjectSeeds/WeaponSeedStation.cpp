@@ -19,7 +19,7 @@ void AWeaponSeedStation::StationAction()
 			{
 				if (seedPC->CanSpendCurrency(CurrencyCost))
 				{
-					WeaponUpgrade->PurchaseWeaponUpgrade();
+					WeaponUpgrade->PurchaseWeaponUpgrade(static_cast<int>(UpgradeAmount));
 				}
 			}
 		}

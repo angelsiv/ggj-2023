@@ -4,7 +4,10 @@
 #include "SeedStation.h"
 
 #include "ProjectSeedsPawn.h"
+#include "SeedPlayerController.h"
+#include "SeedStationText.h"
 #include "Components/BoxComponent.h"
+#include "Components/TextBlock.h"
 
 
 // Sets default values
@@ -28,6 +31,10 @@ ASeedStation::ASeedStation()
 	BoxComponent->SetCollisionProfileName("SeedStation");
 	BoxComponent->SetupAttachment(RootComponent);
 	BoxComponent->SetWorldScale3D({1.5f, 1.5f, 1.0f});
+
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(RootComponent);
+	WidgetComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 }
 
 void ASeedStation::PostInitializeComponents()
@@ -45,6 +52,14 @@ void ASeedStation::PostInitializeComponents()
 void ASeedStation::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (const auto* SeedText = Cast<USeedStationText>(WidgetComponent->GetWidget()))
+	{
+		if (IsValid(SeedText->TheTextBlock))
+		{
+			SeedText->TheTextBlock->SetText(FText::FromString(FString::Printf(TEXT("%s : C[%i], V[%s]"), *Text, CurrencyCost, *FString::SanitizeFloat(UpgradeAmount))));
+		}
+	}
 }
 
 // Called every frame
@@ -55,7 +70,7 @@ void ASeedStation::Tick(float DeltaTime)
 
 void ASeedStation::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (auto* seedPawn = Cast<AProjectSeedsPawn>(OtherActor))
+	if (Cast<AProjectSeedsPawn>(OtherActor) && CanStationAction())
 	{
 		FTimerManager& timerManager = GetWorld()->GetTimerManager();
 		timerManager.ClearTimer(TimerHandle);
@@ -69,11 +84,20 @@ void ASeedStation::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 
 void ASeedStation::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (auto* seedPawn = Cast<AProjectSeedsPawn>(OtherActor))
+	if (Cast<AProjectSeedsPawn>(OtherActor))
 	{
 		FTimerManager& timerManager = GetWorld()->GetTimerManager();
 		timerManager.ClearTimer(TimerHandle);
 	}
+}
+bool ASeedStation::CanStationAction()
+{
+	if (const auto* seedPC = ASeedPlayerController::GetInstance(this))
+	{
+		return seedPC->HasEnoughCurrency(CurrencyCost);
+	}
+
+	return false;
 }
 
 void ASeedStation::StationAction()

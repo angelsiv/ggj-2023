@@ -43,6 +43,7 @@ ABaseSeed::ABaseSeed()
 
 	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthUIComponent"));
 	HealthBarComponent->SetupAttachment(RootComponent);
+	HealthBarComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	// Points
 	ResetPoints();
@@ -61,6 +62,7 @@ void ABaseSeed::ResetPoints()
 {
 	HealthPoints = MaxHealthPoints;
 	CheckHealth();
+	AbilityComponent->ResetPoints();
 }
 
 // Called when the game starts or when spawned
