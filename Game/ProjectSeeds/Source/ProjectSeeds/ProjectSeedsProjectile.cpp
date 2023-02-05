@@ -20,6 +20,7 @@ AProjectSeedsProjectile::AProjectSeedsProjectile()
 	ProjectileMesh->SetupAttachment(RootComponent);
 	ProjectileMesh->BodyInstance.SetCollisionProfileName("Projectile");
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectSeedsProjectile::OnHit);		// set up a notification for when this component hits something
+	ProjectileMesh->SetCanEverAffectNavigation(false);
 	RootComponent = ProjectileMesh;
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
