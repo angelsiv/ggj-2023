@@ -91,6 +91,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectSeedsProjectile> ProjectileClass;
 
+	UFUNCTION(BlueprintCallable)
+	void SetFaction(ESeedFaction Faction);
+
+	UFUNCTION(BlueprintCallable)
+	ESeedFaction GetFaction();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESeedFaction SeedFaction;

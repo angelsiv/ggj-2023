@@ -35,7 +35,6 @@ void ABaseSeedAI::FireShot()
 			FRotator Randomness = FRotator(0, RandomAngle, 0);
 			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation() + Randomness);
 			Projectile->OwningActor = this;
-
 		}
 
 		bCanFire = false;

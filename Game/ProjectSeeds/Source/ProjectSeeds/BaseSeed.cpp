@@ -5,7 +5,6 @@
 
 #include "AbilityComponent.h"
 #include "ProjectSeedsProjectile.h"
-#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -106,7 +105,8 @@ void ABaseSeed::FireShot()
 		UWorld* const World = GetWorld();
 		if (World != nullptr && IsValid(ProjectileClass))
 		{
-			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation());
+			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(
+				ProjectileClass, SpawnLocation, GetActorRotation());
 			Projectile->OwningActor = this;
 		}
 
@@ -126,6 +126,16 @@ void ABaseSeed::FireShot()
 void ABaseSeed::ShotTimerExpired()
 {
 	bCanFire = true;
+}
+
+void ABaseSeed::SetFaction(ESeedFaction Faction)
+{
+	SeedFaction = Faction;
+}
+
+ESeedFaction ABaseSeed::GetFaction()
+{
+	return SeedFaction;
 }
 
 void ABaseSeed::SetHealthToFull()
