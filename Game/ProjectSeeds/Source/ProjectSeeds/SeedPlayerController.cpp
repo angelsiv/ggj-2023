@@ -86,6 +86,11 @@ void ASeedPlayerController::SetupInputComponent()
 
 void ASeedPlayerController::RotateTowardsMouse()
 {
+	if (IsPaused())
+	{
+		return;
+	}
+	
 	FHitResult TraceHitResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult))
 	{
