@@ -4,6 +4,7 @@
 #include "SpawnerComponent.h"
 #include "BaseSeed.h"
 #include "NavigationSystem.h"
+#include "SeedAIControllerBase.h"
 
 // Sets default values for this component's properties
 USpawnerComponent::USpawnerComponent()
@@ -46,12 +47,20 @@ void USpawnerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 				FVector Origin = GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 400.0f);
 
-				FNavLocation  RandomPoint;
+				FNavLocation RandomPoint;
 
 				NavSys->GetRandomPointInNavigableRadius(Origin, 200.0f, RandomPoint);
 				ABaseSeed* NewBaseSeed = Cast<ABaseSeed>(GetWorld()->SpawnActor<ABaseSeed>(ToSpawn, RandomPoint.Location, GetOwner()->GetActorRotation(), spawnParameters));
-				NewBaseSeed->bShouldBLine = true;
-				NewBaseSeed->OnDeath.AddDynamic(this, &USpawnerComponent::OnSpawnDeath);
+
+				if (IsValid(NewBaseSeed))
+				{
+					if (auto* SeedController = Cast<ASeedAIControllerBase>(NewBaseSeed->GetController()))
+					{
+						SeedController->BLine(NewBaseSeed->bShouldBLine);
+					}
+
+					NewBaseSeed->OnDeath.AddDynamic(this, &USpawnerComponent::OnSpawnDeath);
+				}
 			}
 		}
 	}

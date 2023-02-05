@@ -170,6 +170,16 @@ void ABaseSeed::ShotTimerExpired()
 	bCanFire = true;
 }
 
+void ABaseSeed::SetFaction(ESeedFaction Faction)
+{
+	SeedFaction = Faction;
+}
+
+ESeedFaction ABaseSeed::GetFaction()
+{
+	return SeedFaction;
+}
+
 void ABaseSeed::SetHealthToFull()
 {
 	HealthPoints = MaxHealthPoints;
