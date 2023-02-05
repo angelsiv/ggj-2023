@@ -218,6 +218,7 @@ void ABaseSeed::UpgradeMaxHealthPoints(float Value)
 {
 	MaxHealthPoints += Value;
 	HealthPoints = MaxHealthPoints;
+	CheckHealth();
 }
 
 void ABaseSeed::HandleDeath()

@@ -9,8 +9,6 @@
 
 void AWeaponSeedStation::StationAction()
 {
-	Super::StationAction();
-
 	if (auto* seedPC = ASeedPlayerController::GetInstance(this))
 	{
 		if (const auto* seedPawn = seedPC->GetSeedPawn())
@@ -24,4 +22,6 @@ void AWeaponSeedStation::StationAction()
 			}
 		}
 	}
+	
+	Super::StationAction();
 }

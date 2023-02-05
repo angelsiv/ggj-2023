@@ -2,13 +2,15 @@
 
 
 #include "SeedStation.h"
-
 #include "ProjectSeedsPawn.h"
 #include "SeedPlayerController.h"
 #include "SeedStationText.h"
 #include "Components/BoxComponent.h"
 #include "Components/TextBlock.h"
 
+FLinearColor ASeedStation::Yellow = FLinearColor(1.0f, 1.0f, 0.0f, 0.5f);
+FLinearColor ASeedStation::Red = FLinearColor(1.0f, 0.0f, 0.0f, 0.5f);
+FLinearColor ASeedStation::Blue = FLinearColor(0.0f, 0.0f, 1.0f, 0.5f);
 
 // Sets default values
 ASeedStation::ASeedStation()
@@ -23,7 +25,8 @@ ASeedStation::ASeedStation()
 	StaticMeshComponent->SetCollisionProfileName("SeedStation");
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> CubeFinder(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"), LOAD_Quiet | LOAD_NoWarn);
+	const ConstructorHelpers::FObjectFinder<UStaticMesh> CubeFinder(
+		TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"), LOAD_Quiet | LOAD_NoWarn);
 	StaticMeshComponent->SetStaticMesh(CubeFinder.Object);
 	StaticMeshComponent->SetWorldScale3D({1.0f, 1.0f, 0.2f});
 
@@ -57,7 +60,12 @@ void ASeedStation::BeginPlay()
 	{
 		if (IsValid(SeedText->TheTextBlock))
 		{
-			SeedText->TheTextBlock->SetText(FText::FromString(FString::Printf(TEXT("%s : C[%i], V[%s]"), *Text, CurrencyCost, *FString::SanitizeFloat(UpgradeAmount))));
+			SeedText->TheTextBlock->SetText(FText::FromString(
+				FString::Printf(TEXT("%s : C[%i], V[%s]"), *Text, CurrencyCost,
+				                *FString::SanitizeFloat(UpgradeAmount))));
+			TheProgressBar = SeedText->TheProgressBar;
+			TheProgressBar->SetPercent(0.0f);
+			TheProgressBar->WidgetStyle.BackgroundImage.TintColor = Yellow;
 		}
 	}
 }
@@ -66,30 +74,62 @@ void ASeedStation::BeginPlay()
 void ASeedStation::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
 
-void ASeedStation::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (Cast<AProjectSeedsPawn>(OtherActor) && CanStationAction())
+	if (TimerHandle.IsValid() && IsValid(TheProgressBar))
 	{
-		FTimerManager& timerManager = GetWorld()->GetTimerManager();
-		timerManager.ClearTimer(TimerHandle);
-
-		FTimerDelegate timerDelegate;
-		timerDelegate.BindUObject(this, &ASeedStation::StationAction);
-
-		timerManager.SetTimer(TimerHandle, timerDelegate, DelayUpgradeTime, false);
+		const FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+		const float Remaining = TimerManager.GetTimerRemaining(TimerHandle);
+		if (Remaining > 0.0f)
+		{
+			TheProgressBar->SetPercent((DelayUpgradeTime - Remaining) / DelayUpgradeTime);
+		}
 	}
 }
 
-void ASeedStation::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ASeedStation::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                     const FHitResult& SweepResult)
 {
 	if (Cast<AProjectSeedsPawn>(OtherActor))
 	{
+		AcceptOverlap();
+	}
+}
+
+void ASeedStation::AcceptOverlap()
+{
+	TheProgressBar->SetPercent(0.0f);
+
+	if (CanStationAction())
+	{
+		TheProgressBar->WidgetStyle.BackgroundImage.TintColor = Blue;
+
+		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+		TimerManager.ClearTimer(TimerHandle);
+
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUObject(this, &ASeedStation::StationAction);
+
+		TimerManager.SetTimer(TimerHandle, TimerDelegate, DelayUpgradeTime, false);
+	}
+	else
+	{
+		TheProgressBar->WidgetStyle.BackgroundImage.TintColor = Red;
+	}
+}
+
+void ASeedStation::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (Cast<AProjectSeedsPawn>(OtherActor))
+	{
+		TheProgressBar->WidgetStyle.BackgroundImage.TintColor = Yellow;
+		TheProgressBar->SetPercent(0.0f);
 		FTimerManager& timerManager = GetWorld()->GetTimerManager();
 		timerManager.ClearTimer(TimerHandle);
 	}
 }
+
 bool ASeedStation::CanStationAction()
 {
 	if (const auto* seedPC = ASeedPlayerController::GetInstance(this))
@@ -102,5 +142,5 @@ bool ASeedStation::CanStationAction()
 
 void ASeedStation::StationAction()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, FString::Printf(TEXT("[%s] STATION ACTION"), *GetName()));
+	AcceptOverlap();
 }

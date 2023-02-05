@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SeedStationText.h"
+#include "Components/ProgressBar.h"
 #include "GameFramework/Actor.h"
 #include "SeedStation.generated.h"
 
@@ -44,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString Text = TEXT("Station Type");
 
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,6 +57,9 @@ public:
 
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void AcceptOverlap();
+	
 	UFUNCTION()
 	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
@@ -61,4 +68,12 @@ public:
 
 protected:
 	FTimerHandle TimerHandle;
+
+	UPROPERTY(EditAnywhere)
+	UProgressBar* TheProgressBar = nullptr;
+
+private:
+	static FLinearColor Yellow;
+	static FLinearColor Blue;
+	static FLinearColor Red;
 };

@@ -8,14 +8,12 @@
 
 AHealthSeedStation::AHealthSeedStation()
 {
-	CurrencyCost = 10.0f;
+	CurrencyCost = 5.0f;
 	UpgradeAmount = 50.0f;
 }
 
 void AHealthSeedStation::StationAction()
 {
-	Super::StationAction();
-
 	if (auto* seedPC = ASeedPlayerController::GetInstance(this))
 	{
 		if (auto* seedPawn = seedPC->GetSeedPawn())
@@ -26,4 +24,6 @@ void AHealthSeedStation::StationAction()
 			}
 		}
 	}
+	
+	Super::StationAction();
 }

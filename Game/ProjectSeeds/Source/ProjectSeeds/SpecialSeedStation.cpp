@@ -5,5 +5,6 @@
 
 void ASpecialSeedStation::StationAction()
 {
+	// Logic
 	Super::StationAction();
 }

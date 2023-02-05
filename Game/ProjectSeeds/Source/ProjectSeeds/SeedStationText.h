@@ -17,4 +17,6 @@ class PROJECTSEEDS_API USeedStationText : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock*  TheTextBlock;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* TheProgressBar;
 };

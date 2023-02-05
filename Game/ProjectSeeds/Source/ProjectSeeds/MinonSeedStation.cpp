@@ -5,5 +5,6 @@
 
 void AMinonSeedStation::StationAction()
 {
+	// Logic
 	Super::StationAction();
 }

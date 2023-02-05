@@ -2,7 +2,6 @@
 
 
 #include "SeedPlayerController.h"
-
 #include "ProjectSeedsPawn.h"
 #include "SeedCollectable.h"
 #include "Camera/CameraComponent.h"
@@ -33,6 +32,9 @@ void ASeedPlayerController::Tick(float DeltaSeconds)
 	{
 		return;
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, -0.0f, FColor::Yellow,
+	                                 FString::Printf(TEXT("Spores : [%i]"), CurrencyAmmount));
 
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
@@ -89,7 +91,8 @@ void ASeedPlayerController::RotateTowardsMouse()
 	{
 		FVector CursorFV = TraceHitResult.ImpactNormal;
 		FRotator CursorR = CursorFV.Rotation();
-		FRotator NewLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), TraceHitResult.Location);
+		FRotator NewLookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+			GetPawn()->GetActorLocation(), TraceHitResult.Location);
 		GetPawn()->SetActorRotation(FRotator(0, NewLookAtRotation.Yaw, 0));
 
 		if (IsValid(_spawnedCursor))
@@ -133,7 +136,7 @@ bool ASeedPlayerController::CanSpendCurrency(int Value)
 		CurrencyAmmount -= Value;
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -151,12 +154,12 @@ void ASeedPlayerController::OnPossess(APawn* aPawn)
 	_cameraBoom = Cast<USpringArmComponent>(aPawn->GetComponentByClass(USpringArmComponent::StaticClass()));
 
 	aPawn->OnActorBeginOverlap.AddDynamic(this, &ASeedPlayerController::OnBeginActorPawnOverlap);
-	
+
 	if (IsValid(_cameraBoom))
 	{
 		_cameraBoom->TargetArmLength = ZoomDefault;
 	}
-	
+
 	if (CursorActor)
 	{
 		_spawnedCursor = GetWorld()->SpawnActor<AActor>(CursorActor);
@@ -167,7 +170,8 @@ void ASeedPlayerController::OnZoom(float AxisValue)
 {
 	if (IsValid(_cameraBoom))
 	{
-		_cameraBoom->TargetArmLength = FMath::Clamp(_cameraBoom->TargetArmLength - AxisValue * ZoomSpeed, ZoomMin, ZoomMax);
+		_cameraBoom->TargetArmLength = FMath::Clamp(_cameraBoom->TargetArmLength - AxisValue * ZoomSpeed, ZoomMin,
+		                                            ZoomMax);
 	}
 }
 
@@ -186,12 +190,13 @@ void ASeedPlayerController::OnBeginActorPawnOverlap(AActor* OverlappedActor, AAc
 		seedCollectable->Collect(this, OverlappedActor);
 	}
 }
+
 ASeedPlayerController* ASeedPlayerController::GetInstance(const UObject* contextObject)
 {
-	if (auto* world = GEngine->GetWorldFromContextObject(contextObject,EGetWorldErrorMode::LogAndReturnNull))
+	if (auto* world = GEngine->GetWorldFromContextObject(contextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		return Cast<ASeedPlayerController>(world->GetFirstPlayerController());
 	}
-	
+
 	return nullptr;
 }

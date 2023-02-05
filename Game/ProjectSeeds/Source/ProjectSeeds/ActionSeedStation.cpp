@@ -9,13 +9,11 @@
 
 AActionSeedStation::AActionSeedStation()
 {
-	CurrencyCost = 30.0f;
+	CurrencyCost = 3.0f;
 }
 
 void AActionSeedStation::StationAction()
 {
-	Super::StationAction();
-	
 	if (auto* seedPC = ASeedPlayerController::GetInstance(this))
 	{
 		if (const auto* seedPawn = seedPC->GetSeedPawn())
@@ -29,4 +27,6 @@ void AActionSeedStation::StationAction()
 			}
 		}
 	}
+	
+	Super::StationAction();
 }
