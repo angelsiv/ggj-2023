@@ -203,6 +203,7 @@ void ABaseSeed::Heal(float Value)
 
 void ABaseSeed::CheckHealth()
 {
+	OnCheckHealthPoints.Broadcast(HealthPoints, MaxHealthPoints);
 	if (HealthWidget)
 	{
 		HealthWidget->HealthBar->SetPercent(GetHealthPercentage());

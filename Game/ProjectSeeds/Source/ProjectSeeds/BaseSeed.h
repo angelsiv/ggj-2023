@@ -10,6 +10,7 @@
 #include "BaseSeed.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, ABaseSeed*, BaseSeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckHealthPoints, float, CurrentHealth, float, MaxHealth);
 
 UENUM()
 enum class ESeedFaction : uint8
@@ -33,6 +34,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	class UWeaponUpgradeComponent* WeaponUpgradeComponent;
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
+	FOnCheckHealthPoints OnCheckHealthPoints;
 	
 public:
 	// Sets default values for this pawn's properties
@@ -52,7 +56,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float HealthPoints;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHealthPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
