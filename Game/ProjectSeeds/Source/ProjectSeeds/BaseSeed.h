@@ -60,7 +60,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bShouldBLine = false;
 	
 	UPROPERTY(EditAnywhere)
