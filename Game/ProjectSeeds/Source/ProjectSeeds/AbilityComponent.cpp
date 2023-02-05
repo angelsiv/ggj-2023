@@ -55,13 +55,11 @@ void UAbilityComponent::ActivateAbility()
 
 void UAbilityComponent::CooldownExpired()
 {
-	// do nothing for now
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("ability cooldown expired")));
+	ActionPoints += 1;
 }
 
 void UAbilityComponent::ActiveAbilityExpired()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("active ability expired")));
 	bActiveAbility = false;
 
 	if(ActivatedAbility != nullptr)

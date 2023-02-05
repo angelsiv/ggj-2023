@@ -200,7 +200,6 @@ void ABaseSeed::Heal(float Value)
 
 void ABaseSeed::CheckHealth()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%f"), HealthPoints));
 	if (HealthWidget)
 	{
 		HealthWidget->HealthBar->SetPercent(GetHealthPercentage());

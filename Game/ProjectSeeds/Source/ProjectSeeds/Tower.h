@@ -31,9 +31,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool bIsInRange(ABaseSeed* Entity);
 
-protected:
-	virtual void FireShot() override;
-
 private:
 	UPROPERTY()
 	float RangeRadius = 2000.0f;

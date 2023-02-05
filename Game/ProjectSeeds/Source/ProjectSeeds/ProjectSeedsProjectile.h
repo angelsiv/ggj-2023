@@ -19,9 +19,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-
-	FName Name;
-	
 	/** Returns ProjectileMesh subobject **/
 	FORCEINLINE UStaticMeshComponent* GetProjectileMesh() const { return ProjectileMesh; }
 	/** Returns ProjectileMovement subobject **/

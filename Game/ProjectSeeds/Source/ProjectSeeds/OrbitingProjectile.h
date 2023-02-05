@@ -29,10 +29,9 @@ public:
 	float OrbitSpeed;
 
 protected:
-	float MaxOrbitalDistance = 500.0f;
+	float MaxOrbitalDistance = 750.0f;
 	float MinOrbitalDistance = 200.0f;
 
-	
 	bool bIncreasing = false;
 
 	void OrbitAround(float DeltaTime);
