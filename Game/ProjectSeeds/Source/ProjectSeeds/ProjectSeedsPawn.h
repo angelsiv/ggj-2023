@@ -23,6 +23,8 @@ public:
 	AProjectSeedsPawn();
 	virtual bool ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const override;
 
+	virtual void HandleDeath() override;
+	
 private:
 	ESeedFaction Faction;
 };

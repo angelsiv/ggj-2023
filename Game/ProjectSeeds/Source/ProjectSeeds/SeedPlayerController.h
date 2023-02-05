@@ -74,4 +74,7 @@ private:
 
 	UPROPERTY()
 	AActor* _spawnedCursor;
+
+public:
+	static ASeedPlayerController* GetInstance(const UObject* contextObject);
 };
