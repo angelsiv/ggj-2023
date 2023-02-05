@@ -57,6 +57,7 @@ void UAbilityComponent::ActivateAbility()
 void UAbilityComponent::CooldownExpired()
 {
 	ActionPoints = FMath::Min(ActionPoints + 1, MaxActionPoints);
+	OnCheckAbilityPoints.Broadcast(ActionPoints, MaxActionPoints);
 }
 
 void UAbilityComponent::ActiveAbilityExpired()
