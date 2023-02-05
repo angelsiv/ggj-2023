@@ -21,7 +21,8 @@ void UAbilityComponent::SetActiveAbility(ABaseAbility* Ability)
 
 void UAbilityComponent::BindAbilities()
 {
-	PlayerController->InputComponent->BindAction(ActivateBinding, IE_Pressed, this, &UAbilityComponent::ActivateAbility);
+	PlayerController->InputComponent->
+	                  BindAction(ActivateBinding, IE_Pressed, this, &UAbilityComponent::ActivateAbility);
 }
 
 bool UAbilityComponent::bAbilityOnCooldown()
@@ -71,12 +72,14 @@ void UAbilityComponent::ActiveAbilityExpired()
 void UAbilityComponent::ResetPoints()
 {
 	ActionPoints = MaxActionPoints;
+	OnCheckAbilityPoints.Broadcast(ActionPoints, MaxActionPoints);
 }
 
 void UAbilityComponent::UpgradeMaxActionPoints(int Value)
 {
 	MaxActionPoints += Value;
 	ActionPoints = MaxActionPoints;
+	OnCheckAbilityPoints.Broadcast(ActionPoints, MaxActionPoints);
 }
 
 bool UAbilityComponent::CanSpendActionPoints(int Value)
@@ -84,11 +87,13 @@ bool UAbilityComponent::CanSpendActionPoints(int Value)
 	if (ActionPoints >= Value)
 	{
 		ActionPoints -= Value;
+		OnCheckAbilityPoints.Broadcast(ActionPoints, MaxActionPoints);
 		return true;
 	}
 
 	return false;
 }
+
 void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -104,7 +109,8 @@ void UAbilityComponent::BeginPlay()
 
 
 // Called every frame
-void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 

@@ -22,15 +22,16 @@ UCLASS()
 class PROJECTSEEDS_API ABaseSeed : public ACharacter
 {
 	GENERATED_BODY()
-
+	
+public:
 	/* The mesh component */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
 	class UStaticMeshComponent* ShipMeshComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UAbilityComponent* AbilityComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	class UWeaponUpgradeComponent* WeaponUpgradeComponent;
 	
 public:

@@ -8,6 +8,8 @@
 #include "Components/ActorComponent.h"
 #include "AbilityComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckAbilityPoints, int, CurrentPoints, int, MaxPoints);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTSEEDS_API UAbilityComponent : public UActorComponent
 {
@@ -19,16 +21,19 @@ public:
 
 	void SetActiveAbility(ABaseAbility* Ability);
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxActionPoints = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ActionPoints = 1;
+	
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
+	FOnCheckAbilityPoints OnCheckAbilityPoints;
+	
 	// Action Points
 	virtual bool CanSpendActionPoints(int Value);
 	virtual void UpgradeMaxActionPoints(int Value);
 	void ResetPoints();
-	
-	UPROPERTY(EditAnywhere)
-	int MaxActionPoints;
-	
-	UPROPERTY(EditAnywhere)
-	int ActionPoints;
 	
 protected:
 	void BindAbilities();
