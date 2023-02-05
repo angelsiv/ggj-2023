@@ -30,6 +30,9 @@ class PROJECTSEEDS_API ABaseSeed : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UAbilityComponent* AbilityComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UWeaponUpgradeComponent* WeaponUpgradeComponent;
+	
 public:
 	// Sets default values for this pawn's properties
 	ABaseSeed();

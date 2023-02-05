@@ -5,6 +5,7 @@
 
 #include "AbilityComponent.h"
 #include "ProjectSeedsProjectile.h"
+#include "WeaponUpgradeComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,7 +20,9 @@ ABaseSeed::ABaseSeed()
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetupAttachment(RootComponent);
 
-	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbiilityComponent"));
+	AbilityComponent       = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbiilityComponent"));
+	WeaponUpgradeComponent = CreateDefaultSubobject<UWeaponUpgradeComponent>(TEXT("WeaponUpgradeComponent"));
+
 	//RootComponent = CapsuleComponent;
 
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -106,8 +109,47 @@ void ABaseSeed::FireShot()
 		UWorld* const World = GetWorld();
 		if (World != nullptr && IsValid(ProjectileClass))
 		{
-			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation());
+			FActorSpawnParameters SpawnParam;
+			SpawnParam.Owner = GetOwner();
+			SpawnParam.Instigator = Cast<ACharacter>(GetOwner());
+			SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+			
+			const auto Projectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass, SpawnLocation, GetActorRotation(), SpawnParam);
 			Projectile->OwningActor = this;
+			
+			
+			if(WeaponUpgradeComponent->GetNumBullets() > 0)
+			{
+				for(int i = 0; i < WeaponUpgradeComponent->GetNumBullets(); i++)
+				{
+					float RandomAngleLeft = FMath::RandRange(-15, 5);
+					float RandomAngleRight = FMath::RandRange(5, 15);
+
+					int Random = FMath::RandRange(0,1);
+					FRotator RandomAngle;
+
+					switch(Random)
+					{
+						case 0:
+							RandomAngle =  FRotator(0, RandomAngleLeft, 0);
+							break;
+						case 1:
+							RandomAngle = FRotator(0, RandomAngleRight, 0);
+							break;
+						default:
+							break;
+					}
+
+					
+					const auto ExtraProjectile = World->SpawnActor<AProjectSeedsProjectile>(ProjectileClass,
+						SpawnLocation,
+						GetActorRotation() + RandomAngle,
+						SpawnParam);
+					
+					ExtraProjectile->OwningActor = this;
+
+				}
+			}
 		}
 
 		bCanFire = false;
